@@ -7,7 +7,7 @@ This repository contains the working material for a master's thesis on empirical
 The thesis studies a semantic communication pipeline where an input is encoded by a foundation-model encoder, compressed or corrupted by an abstract communication channel, and then used by a receiver-side task head:
 
 ```text
-input x -> semantic encoder f_N -> feature z -> channel C_(B,gamma) -> received feature z_tilde -> task head g -> prediction y_hat
+input x -> semantic encoder f_N -> feature z -> channel C_(B, Landa) -> received feature z_tilde -> task head g -> prediction y_hat
 ```
 
 The main research question is:
@@ -33,7 +33,7 @@ The planned experimental framework will compare task performance across controll
 - encoder size `N`
 - training data size `D`
 - transmitted embedding width `B`
-- channel quality / noise parameter `gamma`
+- channel quality / noise parameter `Landa`
 
 The first practical experiment is expected to fix a ViT-Tiny encoder and study dataset and data-size scaling under clean and channel-constrained settings.
 
@@ -48,7 +48,7 @@ L = L_inf + a N^(-alpha) + b D^(-beta)
 with channel-aware variants that include embedding budget and channel quality:
 
 ```text
-L = L_inf + a N^(-alpha) + b D^(-beta) + c B^(-eta) + d gamma^(-kappa)
+L = L_inf + a N^(-alpha) + b D^(-beta) + c B^(-eta) + d landa^(-kappa)
 ```
 
 The goal is to identify whether channel-aware models predict held-out configurations better than classical scaling laws.
