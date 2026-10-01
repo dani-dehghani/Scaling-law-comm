@@ -1,0 +1,41 @@
+experiment:
+  name: vit_tiny_places365_final_pipeline_smoke
+  output_dir: results/places365_final_pipeline_smoke
+  cache_dir: cache/vit_tiny_places365_standard
+  protocol_status: smoke_only
+  protocol_block_reason: >-
+    Pipeline rehearsal using the provisional recipe. This config may only run
+    with --train-only and must never evaluate the locked final split.
+
+model:
+  name: vit_tiny_patch16_224.augreg_in21k_ft_in1k
+  pretrained: true
+  num_classes: 365
+
+data:
+  root: data/places365
+  dataset: Places365
+  places_variant: standard
+  places_small: true
+  download: true
+  validation_per_class: 50
+  sampling: stratified_proportional
+  dataset_sizes: [1300]
+  seeds: [0]
+  num_workers: 8
+  feature_batch_size: 256
+
+probe:
+  batch_size: 256
+  learning_rate: 0.0001
+  weight_decay: 0.3
+  schedule: constant
+  max_steps: 30000
+  eval_every_steps: 20
+  patience_evals: 50
+  min_delta: 0.00001
+
+runtime:
+  device: auto
+  amp_feature_extraction: false
+  deterministic: true

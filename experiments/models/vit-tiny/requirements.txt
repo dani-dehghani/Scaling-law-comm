@@ -1,0 +1,9 @@
+# Install torch + torchvision first using the official PyTorch command that
+# matches the CUDA/runtime available on your university cluster.
+timm>=1.0
+numpy>=1.26
+pandas>=2.0
+matplotlib>=3.8
+PyYAML>=6.0
+tqdm>=4.66
+scipy>=1.11

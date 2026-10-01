@@ -1,0 +1,16 @@
+.DS_Store
+.Rhistory
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+data/
+cache/
+results/
+tmp/
+*.pt
+*.pth
+*.npy
+*.npz
+*.tar.gz

@@ -1,0 +1,38 @@
+experiment:
+  name: vit_tiny_cifar100_hpo_lr_stage1
+  output_dir: results/hpo_lr_stage1
+  cache_dir: cache/vit_tiny_cifar100
+
+model:
+  name: vit_tiny_patch16_224.augreg_in21k_ft_in1k
+  pretrained: true
+  num_classes: 100
+
+data:
+  root: data
+  dataset: CIFAR100
+  validation_per_class: 50
+  dataset_sizes: [200, 1000, 5000, 45000]
+  seeds: [0, 1, 2]
+  num_workers: 4
+  feature_batch_size: 256
+
+probe:
+  batch_size: 256
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  schedule: constant
+  max_steps: 3000
+  eval_every_steps: 10
+  patience_evals: 20
+  min_delta: 0.0001
+
+hpo:
+  learning_rates: [0.0001, 0.0003, 0.001, 0.003, 0.01, 0.03]
+  weight_decays: [0.0001]
+  schedules: [constant]
+
+runtime:
+  device: auto
+  amp_feature_extraction: false
+  deterministic: true

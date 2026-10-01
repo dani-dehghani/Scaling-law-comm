@@ -1,0 +1,47 @@
+experiment:
+  name: vit_tiny_places365_hpo_wd_boundary_8d_10seeds_30k
+  output_dir: results/hpo_places365_wd_boundary_8d_10seeds_30k
+  cache_dir: cache/vit_tiny_places365_standard
+
+model:
+  name: vit_tiny_patch16_224.augreg_in21k_ft_in1k
+  pretrained: true
+  num_classes: 365
+
+data:
+  root: data/places365
+  dataset: Places365
+  places_variant: standard
+  places_small: true
+  download: true
+  validation_per_class: 50
+  sampling: stratified_proportional
+  dataset_sizes: [1300, 3650, 10000, 25000, 45000, 100000, 250000, 500000]
+  seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  num_workers: 8
+  feature_batch_size: 256
+
+probe:
+  batch_size: 256
+  learning_rate: 0.0001
+  weight_decay: 0.3
+  schedule: constant
+  max_steps: 30000
+  eval_every_steps: 20
+  patience_evals: 50
+  min_delta: 0.00001
+
+# The preceding refinement selected WD=0.3 at its upper boundary for the
+# global recipe and at seven of eight per-D optima. Retain 0.1 and 0.3 as
+# anchors and add two higher logarithmic points. LR=5e-4 extends above the
+# D=1300 per-D boundary while the useful global and small-D regions remain.
+hpo:
+  learning_rates: [0.00002, 0.00003, 0.0001, 0.0002, 0.0003, 0.0005]
+  weight_decays: [0.1, 0.3, 1.0, 3.0]
+  schedules: [constant]
+  batch_sizes: [256]
+
+runtime:
+  device: auto
+  amp_feature_extraction: false
+  deterministic: true

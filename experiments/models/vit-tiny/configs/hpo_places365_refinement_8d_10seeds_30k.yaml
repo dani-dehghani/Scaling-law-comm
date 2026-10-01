@@ -1,0 +1,53 @@
+experiment:
+  name: vit_tiny_places365_hpo_refinement_8d_10seeds_30k
+  output_dir: results/hpo_places365_refinement_8d_10seeds_30k
+  cache_dir: cache/vit_tiny_places365_standard
+
+model:
+  name: vit_tiny_patch16_224.augreg_in21k_ft_in1k
+  pretrained: true
+  num_classes: 365
+
+data:
+  root: data/places365
+  dataset: Places365
+  places_variant: standard
+  places_small: true
+  download: true
+  validation_per_class: 50
+  sampling: stratified_proportional
+  dataset_sizes: [1300, 3650, 10000, 25000, 45000, 100000, 250000, 500000]
+  seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  num_workers: 8
+  feature_batch_size: 256
+
+# The original 10,000-step HPO selected checkpoints near the ceiling for all
+# seeds at D=250k and D=500k. A shared 30,000-step ceiling gives every promoted
+# configuration the same larger opportunity to converge. Early stopping still
+# ends runs after 1,000 steps without sufficient validation improvement.
+probe:
+  batch_size: 256
+  learning_rate: 0.0002
+  weight_decay: 0.01
+  schedule: constant
+  max_steps: 30000
+  eval_every_steps: 20
+  patience_evals: 50
+  min_delta: 0.00001
+
+# Focused refinement of the completed 5,280-trial grid:
+# - 1e-5 and 2e-5 extend below the small-D LR boundary of 3e-5.
+# - 1e-4, 2e-4, and 3e-4 cover the competitive global region.
+# - 0.03, 0.1, and 0.3 extend beyond the old WD boundary of 0.01.
+# The 30 configurations are evaluated at all 8 D values and all 10 seeds so
+# the global relative-regret selector remains well-defined.
+hpo:
+  learning_rates: [0.00001, 0.00002, 0.00003, 0.0001, 0.0002, 0.0003]
+  weight_decays: [0.001, 0.01, 0.03, 0.1, 0.3]
+  schedules: [constant]
+  batch_sizes: [256]
+
+runtime:
+  device: auto
+  amp_feature_extraction: false
+  deterministic: true

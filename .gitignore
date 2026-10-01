@@ -18,3 +18,7 @@ models/
 wandb/
 
 *.log
+
+!experiments/models/
+experiments/models/*
+!experiments/models/vit-tiny/

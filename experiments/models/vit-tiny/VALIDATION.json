@@ -1,0 +1,48 @@
+{
+  "snapshot_date": "2026-10-01",
+  "training_rerun": false,
+  "checks": {
+    "cifar100_main": {
+      "unique_expected_runs": 120,
+      "sizes": 12,
+      "seeds_per_size": 10,
+      "aggregate_means_and_sample_sds_match": true
+    },
+    "cifar100_core_hpo": {
+      "trial_rows": 7920,
+      "exact_grid_coverage": true,
+      "duplicates": 0,
+      "finite_positive_validation_losses": true
+    },
+    "places365_global_hpo": {
+      "trial_rows": 5280,
+      "exact_grid_coverage": true,
+      "duplicates": 0,
+      "finite_positive_validation_losses": true
+    },
+    "places365_refinement_hpo": {
+      "trial_rows": 2400,
+      "exact_grid_coverage": true,
+      "duplicates": 0,
+      "finite_positive_validation_losses": true,
+      "selected_recipe_budget_warning_runs": 0
+    },
+    "python_syntax": "passed",
+    "pytest": {
+      "passed": 36,
+      "skipped": 3,
+      "failed": 0,
+      "skip_reason": "scipy.optimize cannot import because of a local macOS SciPy binary loading error; three fitting tests are unverified"
+    },
+    "places365_boundary_dry_run": {
+      "configurations": 24,
+      "sizes": 8,
+      "seeds": 10,
+      "total_trials": 1920
+    }
+  },
+  "packaging_environment": {
+    "python": "3.11.6",
+    "platform": "Darwin"
+  }
+}

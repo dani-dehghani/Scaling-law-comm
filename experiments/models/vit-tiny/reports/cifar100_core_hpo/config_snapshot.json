@@ -1,0 +1,89 @@
+{
+  "data": {
+    "dataset": "CIFAR100",
+    "dataset_sizes": [
+      200,
+      500,
+      1000,
+      1500,
+      2500,
+      5000,
+      7500,
+      10000,
+      15000,
+      25000,
+      35000,
+      45000
+    ],
+    "feature_batch_size": 256,
+    "num_workers": 4,
+    "root": "data",
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "validation_per_class": 50
+  },
+  "experiment": {
+    "cache_dir": "cache/vit_tiny_cifar100",
+    "name": "vit_tiny_cifar100_hpo_core_12d_10seeds",
+    "output_dir": "results/hpo_core_12d_10seeds"
+  },
+  "hpo": {
+    "batch_sizes": [
+      256
+    ],
+    "learning_rates": [
+      3e-05,
+      0.0001,
+      0.0002,
+      0.0003,
+      0.0005,
+      0.0007,
+      0.001,
+      0.0015,
+      0.002,
+      0.003,
+      0.005
+    ],
+    "schedules": [
+      "constant"
+    ],
+    "weight_decays": [
+      0.0,
+      1e-06,
+      1e-05,
+      0.0001,
+      0.001,
+      0.01
+    ]
+  },
+  "model": {
+    "name": "vit_tiny_patch16_224.augreg_in21k_ft_in1k",
+    "num_classes": 100,
+    "pretrained": true
+  },
+  "probe": {
+    "batch_size": 256,
+    "eval_every_steps": 20,
+    "learning_rate": 0.001,
+    "max_steps": 10000,
+    "min_delta": 1e-05,
+    "patience_evals": 50,
+    "schedule": "constant",
+    "weight_decay": 0.0001
+  },
+  "runtime": {
+    "amp_feature_extraction": false,
+    "deterministic": true,
+    "device": "auto"
+  }
+}

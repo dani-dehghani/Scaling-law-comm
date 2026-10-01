@@ -1,0 +1,44 @@
+experiment:
+  name: vit_tiny_cifar100_hpo_core_12d_10seeds
+  output_dir: results/hpo_core_12d_10seeds
+  cache_dir: cache/vit_tiny_cifar100
+
+model:
+  name: vit_tiny_patch16_224.augreg_in21k_ft_in1k
+  pretrained: true
+  num_classes: 100
+
+data:
+  root: data
+  dataset: CIFAR100
+  validation_per_class: 50
+  dataset_sizes: [200, 500, 1000, 1500, 2500, 5000, 7500, 10000, 15000, 25000, 35000, 45000]
+  seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  num_workers: 4
+  feature_batch_size: 256
+
+# These values are placeholders overwritten by every HPO trial. Step-based
+# optimization gives each configuration the same maximum number of updates.
+probe:
+  batch_size: 256
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  schedule: constant
+  max_steps: 10000
+  eval_every_steps: 20
+  patience_evals: 50
+  min_delta: 0.00001
+
+# Stage 2A: exhaustive LR x weight-decay search. The pilot ruled out learning
+# rates >= 0.01, so the grid concentrates resolution in the useful region and
+# extends one step below the pilot's lower boundary.
+hpo:
+  learning_rates: [0.00003, 0.0001, 0.0002, 0.0003, 0.0005, 0.0007, 0.001, 0.0015, 0.002, 0.003, 0.005]
+  weight_decays: [0.0, 0.000001, 0.00001, 0.0001, 0.001, 0.01]
+  schedules: [constant]
+  batch_sizes: [256]
+
+runtime:
+  device: auto
+  amp_feature_extraction: false
+  deterministic: true

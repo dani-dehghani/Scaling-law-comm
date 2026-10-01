@@ -1,0 +1,8 @@
+{
+  "batch_size": 256,
+  "dataset_sizes_compared": 12,
+  "learning_rate": 0.0001,
+  "mean_relative_regret": 0.011700074136194264,
+  "schedule": "constant",
+  "weight_decay": 0.01
+}

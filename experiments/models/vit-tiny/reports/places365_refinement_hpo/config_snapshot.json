@@ -1,0 +1,83 @@
+{
+  "data": {
+    "dataset": "Places365",
+    "dataset_sizes": [
+      1300,
+      3650,
+      10000,
+      25000,
+      45000,
+      100000,
+      250000,
+      500000
+    ],
+    "download": true,
+    "feature_batch_size": 256,
+    "num_workers": 8,
+    "places_small": true,
+    "places_variant": "standard",
+    "root": "data/places365",
+    "sampling": "stratified_proportional",
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "validation_per_class": 50
+  },
+  "experiment": {
+    "cache_dir": "cache/vit_tiny_places365_standard",
+    "name": "vit_tiny_places365_hpo_refinement_8d_10seeds_30k",
+    "output_dir": "results/hpo_places365_refinement_8d_10seeds_30k"
+  },
+  "hpo": {
+    "batch_sizes": [
+      256
+    ],
+    "learning_rates": [
+      1e-05,
+      2e-05,
+      3e-05,
+      0.0001,
+      0.0002,
+      0.0003
+    ],
+    "schedules": [
+      "constant"
+    ],
+    "weight_decays": [
+      0.001,
+      0.01,
+      0.03,
+      0.1,
+      0.3
+    ]
+  },
+  "model": {
+    "name": "vit_tiny_patch16_224.augreg_in21k_ft_in1k",
+    "num_classes": 365,
+    "pretrained": true
+  },
+  "probe": {
+    "batch_size": 256,
+    "eval_every_steps": 20,
+    "learning_rate": 0.0002,
+    "max_steps": 30000,
+    "min_delta": 1e-05,
+    "patience_evals": 50,
+    "schedule": "constant",
+    "weight_decay": 0.01
+  },
+  "runtime": {
+    "amp_feature_extraction": false,
+    "deterministic": true,
+    "device": "auto"
+  }
+}

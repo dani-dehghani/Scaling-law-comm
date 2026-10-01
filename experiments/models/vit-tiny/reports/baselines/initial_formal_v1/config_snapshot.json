@@ -1,0 +1,48 @@
+{
+  "data": {
+    "dataset": "CIFAR100",
+    "dataset_sizes": [
+      500,
+      1000,
+      2500,
+      5000,
+      10000,
+      25000,
+      45000
+    ],
+    "feature_batch_size": 256,
+    "num_workers": 4,
+    "root": "data",
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "validation_per_class": 50
+  },
+  "experiment": {
+    "cache_dir": "cache/vit_tiny_cifar100",
+    "name": "vit_tiny_cifar100_data_scaling_formal_v1",
+    "output_dir": "results/vit_tiny_cifar100_data_scaling_formal_v1"
+  },
+  "model": {
+    "name": "vit_tiny_patch16_224.augreg_in21k_ft_in1k",
+    "num_classes": 100,
+    "pretrained": true
+  },
+  "probe": {
+    "batch_size": 256,
+    "epochs": 100,
+    "learning_rate": 0.01,
+    "min_delta": 0.0001,
+    "patience": 15,
+    "weight_decay": 0.0001
+  },
+  "runtime": {
+    "amp_feature_extraction": false,
+    "deterministic": true,
+    "device": "auto"
+  }
+}

@@ -1,0 +1,35 @@
+experiment:
+  name: vit_tiny_cifar100_legacy_hparams_matched_control
+  output_dir: results/legacy_hparams_matched_control
+  cache_dir: cache/vit_tiny_cifar100
+
+model:
+  name: vit_tiny_patch16_224.augreg_in21k_ft_in1k
+  pretrained: true
+  num_classes: 100
+
+data:
+  root: data
+  dataset: CIFAR100
+  validation_per_class: 50
+  dataset_sizes: [200, 500, 1000, 1500, 2500, 5000, 7500, 10000, 15000, 25000, 35000, 45000]
+  seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  num_workers: 4
+  feature_batch_size: 256
+
+# This matched control changes only LR and weight decay relative to the new
+# global-HPO main sweep. It is distinct from the historical epoch-based run.
+probe:
+  batch_size: 256
+  learning_rate: 0.003
+  weight_decay: 0.0001
+  schedule: constant
+  max_steps: 30000
+  eval_every_steps: 20
+  patience_evals: 50
+  min_delta: 0.00001
+
+runtime:
+  device: auto
+  amp_feature_extraction: false
+  deterministic: true

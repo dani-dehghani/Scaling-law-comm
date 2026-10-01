@@ -1,0 +1,43 @@
+experiment:
+  name: vit_tiny_places365_final_sweep
+  output_dir: results/places365_final_sweep
+  cache_dir: cache/vit_tiny_places365_standard
+  protocol_status: blocked
+  protocol_block_reason: >-
+    Provisional recipe only. Complete the registered WD-boundary HPO and run
+    promote_places365_final_config.py before training this final sweep.
+
+model:
+  name: vit_tiny_patch16_224.augreg_in21k_ft_in1k
+  pretrained: true
+  num_classes: 365
+
+data:
+  root: data/places365
+  dataset: Places365
+  places_variant: standard
+  places_small: true
+  download: true
+  validation_per_class: 50
+  sampling: stratified_proportional
+  dataset_sizes: [1300, 3650, 10000, 25000, 45000, 100000, 250000, 500000]
+  seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  num_workers: 8
+  feature_batch_size: 256
+
+# These are the current provisional refinement values. The promotion script
+# replaces them only after a later HPO passes the registered acceptance gate.
+probe:
+  batch_size: 256
+  learning_rate: 0.0001
+  weight_decay: 0.3
+  schedule: constant
+  max_steps: 30000
+  eval_every_steps: 20
+  patience_evals: 50
+  min_delta: 0.00001
+
+runtime:
+  device: auto
+  amp_feature_extraction: false
+  deterministic: true

@@ -1,0 +1,49 @@
+experiment:
+  name: vit_tiny_places365_global_hpo_8d_10seeds
+  output_dir: results/hpo_places365_global_8d_10seeds
+  cache_dir: cache/vit_tiny_places365_standard
+
+model:
+  name: vit_tiny_patch16_224.augreg_in21k_ft_in1k
+  pretrained: true
+  num_classes: 365
+
+data:
+  root: data/places365
+  dataset: Places365
+  places_variant: standard
+  places_small: true
+  download: true
+  validation_per_class: 50
+  sampling: stratified_proportional
+  # Eight nested points span the low-data regime through 500k. D=45k is an
+  # explicit matched-size comparison with the largest CIFAR-100 training pool.
+  dataset_sizes: [1300, 3650, 10000, 25000, 45000, 100000, 250000, 500000]
+  seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  num_workers: 8
+  feature_batch_size: 256
+
+# These values and the core grid intentionally match the CIFAR-100 HPO so the
+# D=45,000 comparison uses the same optimizer protocol. Convergence at the
+# larger Places365 points remains an explicit acceptance diagnostic.
+probe:
+  batch_size: 256
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  schedule: constant
+  max_steps: 10000
+  eval_every_steps: 20
+  patience_evals: 50
+  min_delta: 0.00001
+
+# 66 configurations x 8 D values x 10 seeds = 5,280 validation-only trials.
+hpo:
+  learning_rates: [0.00003, 0.0001, 0.0002, 0.0003, 0.0005, 0.0007, 0.001, 0.0015, 0.002, 0.003, 0.005]
+  weight_decays: [0.0, 0.000001, 0.00001, 0.0001, 0.001, 0.01]
+  schedules: [constant]
+  batch_sizes: [256]
+
+runtime:
+  device: auto
+  amp_feature_extraction: false
+  deterministic: true

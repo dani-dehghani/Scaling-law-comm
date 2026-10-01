@@ -1,0 +1,34 @@
+experiment:
+  name: vit_tiny_cifar100_data_scaling
+  output_dir: results/vit_tiny_cifar100_data_scaling
+  cache_dir: cache/vit_tiny_cifar100
+
+model:
+  name: vit_tiny_patch16_224.augreg_in21k_ft_in1k
+  pretrained: true
+  num_classes: 100
+
+# We intentionally use the model's deterministic evaluation transform for
+# cached features. Random train-time augmentation would otherwise be frozen
+# into one arbitrary augmented view when features are cached.
+data:
+  root: data
+  dataset: CIFAR100
+  validation_per_class: 50
+  dataset_sizes: [500, 1000, 2500, 5000, 10000, 25000, 45000]
+  seeds: [0, 1, 2]
+  num_workers: 4
+  feature_batch_size: 256
+
+probe:
+  batch_size: 256
+  epochs: 100
+  learning_rate: 0.01
+  weight_decay: 0.0001
+  patience: 15
+  min_delta: 0.0001
+
+runtime:
+  device: auto
+  amp_feature_extraction: false
+  deterministic: true
