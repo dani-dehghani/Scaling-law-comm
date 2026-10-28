@@ -1,0 +1,95 @@
+{
+  "sweeps": {
+    "cifar100_main": {
+      "runs": 120,
+      "sizes": 12,
+      "max_aggregate_difference": 2.220446049250313e-16,
+      "saved_beta": 0.520412832567515,
+      "completion_record": true,
+      "refitted_beta": 0.5204128314735563
+    },
+    "places365_main": {
+      "runs": 80,
+      "sizes": 8,
+      "max_aggregate_difference": 4.440892098500626e-16,
+      "saved_beta": 0.4655409334073817,
+      "completion_record": true,
+      "refitted_beta": 0.46554092874257846
+    },
+    "baselines/formal_lr_001": {
+      "runs": 70,
+      "sizes": 7,
+      "max_aggregate_difference": 2.220446049250313e-16,
+      "saved_beta": 0.5216348755492725,
+      "completion_record": false,
+      "refitted_beta": 0.5216348626087888
+    },
+    "baselines/formal_lr_003": {
+      "runs": 120,
+      "sizes": 12,
+      "max_aggregate_difference": 4.440892098500626e-16,
+      "saved_beta": 0.6087211442996018,
+      "completion_record": false,
+      "refitted_beta": 0.6087211226043214
+    },
+    "baselines/initial_formal_v1": {
+      "runs": 35,
+      "sizes": 7,
+      "max_aggregate_difference": 2.220446049250313e-16,
+      "saved_beta": 0.8049696704074916,
+      "completion_record": false,
+      "refitted_beta": 0.8049696690838651
+    }
+  },
+  "hpo": {
+    "cifar100_core_hpo": {
+      "trials": 7920,
+      "aggregate_cells": 792,
+      "max_aggregate_difference": 0.0,
+      "selected": {
+        "learning_rate": 0.0001,
+        "weight_decay": 0.01,
+        "schedule": "constant",
+        "batch_size": 256
+      },
+      "mean_relative_regret": 0.011700074136194264
+    },
+    "places365_global_hpo": {
+      "trials": 5280,
+      "aggregate_cells": 528,
+      "max_aggregate_difference": 0.0,
+      "selected": {
+        "learning_rate": 0.0002,
+        "weight_decay": 0.01,
+        "schedule": "constant",
+        "batch_size": 256
+      },
+      "mean_relative_regret": 0.0017166819613549655
+    },
+    "places365_refinement_hpo": {
+      "trials": 2400,
+      "aggregate_cells": 240,
+      "max_aggregate_difference": 0.0,
+      "selected": {
+        "learning_rate": 0.0001,
+        "weight_decay": 0.3,
+        "schedule": "constant",
+        "batch_size": 256
+      },
+      "mean_relative_regret": 0.0013200119043974279
+    },
+    "places365_boundary_hpo": {
+      "trials": 1920,
+      "aggregate_cells": 192,
+      "max_aggregate_difference": 0.0,
+      "selected": {
+        "learning_rate": 0.0002,
+        "weight_decay": 1.0,
+        "schedule": "constant",
+        "batch_size": 256
+      },
+      "mean_relative_regret": 0.030199215915568622
+    }
+  },
+  "scope": "Recorded tables and fit consistency only; no training, inference, image/cache audit, or historical chronology proof."
+}

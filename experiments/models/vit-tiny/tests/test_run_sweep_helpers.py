@@ -1,5 +1,5 @@
 from src.sweep import budget_warning
-from run_sweep import _enforce_protocol_status
+from cli.run_sweep import _enforce_protocol_status
 
 
 def test_budget_warning_requires_step_limit_and_late_best_checkpoint():

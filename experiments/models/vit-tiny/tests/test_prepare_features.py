@@ -1,6 +1,6 @@
 from pathlib import Path
 
-import prepare_features
+from cli import prepare_features
 
 
 def test_prepare_features_cli_passes_config_and_force(monkeypatch):
@@ -25,7 +25,7 @@ def test_prepare_features_cli_passes_config_and_force(monkeypatch):
 
     prepare_features.main()
 
-    expected_root = Path(prepare_features.__file__).resolve().parent
+    expected_root = Path(prepare_features.__file__).resolve().parents[1]
     assert captured["config_path"] == expected_root / "configs/example.yaml"
     assert captured["project_root"] == expected_root
     assert captured["cfg"] == {"loaded": True}

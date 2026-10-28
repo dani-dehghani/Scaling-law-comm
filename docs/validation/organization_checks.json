@@ -1,0 +1,45 @@
+{
+  "review_date": "2026-10-28",
+  "python": "3.11.6",
+  "configs": {
+    "data_sweep_global_hpo.yaml": "Dataset sizes: 12\nSeeds: 10\nPlanned runs: 120\nProtocol status: approved",
+    "data_sweep_legacy_matched_control.yaml": "Dataset sizes: 12\nSeeds: 10\nPlanned runs: 120\nProtocol status: approved",
+    "data_sweep_places365_final.yaml": "Dataset sizes: 8\nSeeds: 10\nPlanned runs: 80\nProtocol status: blocked\nProtocol note: Provisional recipe only. Complete the registered WD-boundary HPO and run promote_places365_final_config.py before training this final sweep.",
+    "data_sweep_places365_final_smoke.yaml": "Dataset sizes: 1\nSeeds: 1\nPlanned runs: 1\nProtocol status: smoke_only\nProtocol note: Pipeline rehearsal using the provisional recipe. This config may only run with --train-only and must never evaluate the locked final split.",
+    "data_sweep_vit_tiny.yaml": "Dataset sizes: 7\nSeeds: 3\nPlanned runs: 21\nProtocol status: approved",
+    "hpo_core_12d_10seeds.yaml": "Configurations: 66\nDataset sizes: 12\nSeeds: 10\nTotal trials: 7920\nShard 0/1: 7920 assigned trials",
+    "hpo_lr_stage1.yaml": "Configurations: 6\nDataset sizes: 4\nSeeds: 3\nTotal trials: 72\nShard 0/1: 72 assigned trials",
+    "hpo_places365_global_8d_10seeds.yaml": "Configurations: 66\nDataset sizes: 8\nSeeds: 10\nTotal trials: 5280\nShard 0/1: 5280 assigned trials",
+    "hpo_places365_refinement_8d_10seeds_30k.yaml": "Configurations: 30\nDataset sizes: 8\nSeeds: 10\nTotal trials: 2400\nShard 0/1: 2400 assigned trials",
+    "hpo_places365_wd_boundary_8d_10seeds_30k.yaml": "Configurations: 24\nDataset sizes: 8\nSeeds: 10\nTotal trials: 1920\nShard 0/1: 1920 assigned trials",
+    "archived_cifar100_main": "Dataset sizes: 12\nSeeds: 10\nPlanned runs: 120\nProtocol status: approved",
+    "archived_places365_main": "Dataset sizes: 8\nSeeds: 10\nPlanned runs: 80\nProtocol status: approved"
+  },
+  "syntax": {
+    "python_files": 31,
+    "shell_files": 4
+  },
+  "source_identity": {
+    "experiments/models/vit-tiny/src/scaling.py": "021121f4c8cba8cc820184515f9901b9e556971903a5bc27e153228142b7b829",
+    "experiments/models/vit-tiny/src/config.py": "a51dd21591cef2695ee313c6bf1a935f0ccf2affd10c1b73f1b1cc8fba90d2a3",
+    "experiments/models/vit-tiny/src/feature_cache.py": "e4061d372a2cf4a838d8647e7d7bd1744f6934d50c0e3acaf7c03d555e02d5e7",
+    "experiments/models/vit-tiny/src/reproducibility.py": "ff9777df5d1f165afadd5f6be9cf01961d287735d5ac3c15880ab3f6d9786316",
+    "experiments/models/vit-tiny/src/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "experiments/models/vit-tiny/src/probe.py": "3c05d58cd9dceee9f44dc1d756c2e10f6f26080d8c46326697d8bdf261a88883",
+    "experiments/models/vit-tiny/src/sampling.py": "daa1b3cb6ae1ba26632b654e23a092f2f2971de35126d1a5a999bbf22ac3e924",
+    "experiments/models/vit-tiny/src/io_utils.py": "3975ddbdc427f4dcbb66cca590ce44e438f6388dd3cc66aeb82b73e3ffb37368",
+    "experiments/models/vit-tiny/src/sweep.py": "6dddd75cc11f7bc826e25765006b9efda71794c7f937ab909d40c6896feb9bb3",
+    "experiments/models/vit-tiny/src/hpo.py": "407acf01858b4c48e2d67f7d0f743cac562c896770778d8d1f771c1952515175"
+  },
+  "all_ten_yaml_preserved": true,
+  "original_numerical_artifacts_byte_identical": 51,
+  "original_archived_figures_and_comparison_files_byte_identical": 13,
+  "local_markdown_links_checked": 184,
+  "experiment_register_paths_checked": true,
+  "excluded_checks": [
+    "No original image/cache audit",
+    "No archival retraining or final-feature inference",
+    "No bootstrap rerun",
+    "No exact historical environment/source certification"
+  ]
+}

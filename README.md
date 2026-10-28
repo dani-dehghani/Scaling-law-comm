@@ -1,62 +1,39 @@
-# Thesis: Scaling Laws for Semantic Encoders Under Channel Budgets
+# Scaling-law-comm
 
-This repository contains the working material for a master's thesis on empirical scaling laws for foundation-model semantic encoders in task-oriented communication systems.
+Research on scaling, visual representations and task-oriented communication. Current completed evidence concerns **labeled-data scaling with a frozen ViT-Tiny encoder**; encoder-size and channel studies remain planned.
 
-## Topic
+Start with the [comprehensive thesis progress report](reports/thesis_progress.md). It explains the question, pipeline, experiment progression, results, plots, paper findings and limitations, with links to supporting artifacts.
 
-The thesis studies a semantic communication pipeline where an input is encoded by a foundation-model encoder, compressed or corrupted by an abstract communication channel, and then used by a receiver-side task head:
-
-```text
-input x -> semantic encoder f_N -> feature z -> channel C_(B, Landa) -> received feature z_tilde -> task head g -> prediction y_hat
-```
-
-The main research question is:
-
-> How does downstream task performance scale with encoder size, training data size, transmitted embedding width, and channel quality?
-
-The thesis investigates whether there is a channel-induced saturation point where using a larger encoder no longer improves task performance because the communication channel becomes the bottleneck.
-
-## Current Contents
-
-This repository is currently in an early thesis-planning stage. It will contain:
-
-- thesis notes and roadmap documents
-- literature notes from scaling-law, semantic communication, and JSCC papers
-- experiment design documents
-- reproducible code for the experimental pipeline
-- result summaries, plots, and fitted scaling-law models
-
-## Planned Experimental Direction
-
-The planned experimental framework will compare task performance across controlled sweeps of:
-
-- encoder size `N`
-- training data size `D`
-- transmitted embedding width `B`
-- channel quality / noise parameter `Landa`
-
-The first practical experiment is expected to fix a ViT-Tiny encoder and study dataset and data-size scaling under clean and channel-constrained settings.
-
-## Candidate Scaling Laws
-
-The project compares a channel-unaware scaling-law baseline:
+- [Current progress and next steps](docs/research_status.md)
+- [Experiment register](docs/experiment_index.csv)
+- [13-paper methodology review](docs/literature/README.md) and [comparison table](docs/literature/paper_comparison.csv)
+- [Simple script explanations, diagrams and pseudocode](docs/script_guide.md)
+- [Implementation and execution guide](experiments/models/vit-tiny/README.md)
+- [Evidence verification and reproducibility limits](experiments/models/vit-tiny/REPRODUCIBILITY.md)
+- [Organization record](docs/organization_log.md)
 
 ```text
-L = L_inf + a N^(-alpha) + b D^(-beta)
+Scaling-law-comm/
+├── README.md
+├── docs/                  # Status, experiment register, literature, learning guides
+├── reports/
+│   ├── thesis_progress.md # One current comprehensive narrative
+│   ├── experiments/       # Main scorecards and marked historical reports
+│   ├── figures/           # Regenerated report figures and archived originals
+│   └── tables/            # Separately identified derived diagnostics
+└── experiments/models/vit-tiny/
+    ├── README.md
+    ├── src/               # Reusable scientific implementation
+    ├── cli/               # Programs invoked with python -m cli.NAME
+    ├── scripts/           # Shell launchers and historical figure builder
+    ├── configs/           # Current and clearly documented historical templates
+    ├── protocols/         # Preserved experiment designs and acceptance rules
+    ├── tests/
+    └── artifacts/         # Compact recorded metrics, fits and snapshots
 ```
 
-with channel-aware variants that include embedding budget and channel quality:
+**Dated update — 28 October 2026:** reconciled the local archive with GitHub, added completed Places365 boundary HPO and final-evaluation evidence, checked 425 compact sweep records and 17,520 HPO trials, reviewed all 13 unique supplied papers for dataset-size methodology, and consolidated the research narrative. No new scientific training or final evaluation was performed for this update. Experiment execution is not being dated to this week.
 
-```text
-L = L_inf + a N^(-alpha) + b D^(-beta) + c B^(-eta) + d landa^(-kappa)
-```
+Main endpoints: CIFAR-100 76.608% at D=45,000; Places365 46.668% at D=500,000. These are ten-seed means under different task-specific fixed recipes; see the report for SDs and split definitions. Fitted exponents (.5204 and .4655) describe the observed protocols and do not establish a universal law.
 
-The goal is to identify whether channel-aware models predict held-out configurations better than classical scaling laws.
-
-## Repository Status
-
-This repository has just been initialized. Code, datasets, and reproducible experiment scripts should be added as the implementation phase begins.
-
-## Notes for Development
-
-Avoid committing local system files, personal configuration files, caches, datasets, model checkpoints, or large experiment outputs.
+Next: agree the D-baseline/N-sweep scope with the supervisor; recover source/cache provenance and resolve execution-integrity gaps; specify predictive-fit and compute controls before new experiments. The original archive and paper folder remain external. Raw images, feature tensors, weights and copyrighted PDFs are not stored here.

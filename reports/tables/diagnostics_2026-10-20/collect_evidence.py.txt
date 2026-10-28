@@ -1,0 +1,92 @@
+"""Read existing tables and source files; write only this review's evidence."""
+import hashlib
+import itertools
+import json
+import subprocess
+import sys
+import ast
+from importlib.metadata import version
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
+ROOT = Path(__file__).resolve().parents[1]
+PROJECT = ROOT / "vit_tiny_data_scaling"
+sys.path.insert(0, str(PROJECT))
+from src.config import load_config
+from src.hpo import aggregate_trials, select_global_config
+from src.scaling import _fit_power_law, scaling_law
+
+
+def main():
+    evidence = {"configs": {}, "hpo": {}, "sweeps": {}, "source_sha256": {}}
+    for path in sorted((PROJECT / "configs").glob("*.yaml")):
+        cfg = load_config(path)
+        script = "run_hpo.py" if "hpo" in cfg else "run_sweep.py"
+        command = [sys.executable, "-B", str(PROJECT / script), "--config", str(path), "--dry-run"]
+        result = subprocess.run(command, text=True, capture_output=True)
+        assert result.returncode == 0, result.stderr
+        evidence["configs"][path.name] = result.stdout.strip()
+    folders = ["hpo_core_summary", "places365_hpo_results/hpo_places365_global_8d_10seeds",
+               "hpo_places365_refinement_8d_10seeds_30k/hpo_places365_refinement_8d_10seeds_30k",
+               "places365_wd_boundary_analysis"]
+    for relative in folders:
+        folder = ROOT / relative
+        cfg = json.loads((folder / "config_snapshot.json").read_text())
+        trials = pd.read_csv(folder / "hpo_trials.csv")
+        fields = ["D", "seed", "learning_rate", "weight_decay", "schedule", "batch_size"]
+        expected = set(itertools.product(cfg["data"]["dataset_sizes"], cfg["data"]["seeds"],
+            cfg["hpo"]["learning_rates"], cfg["hpo"]["weight_decays"], cfg["hpo"]["schedules"],
+            cfg["hpo"].get("batch_sizes", [cfg["probe"]["batch_size"]])))
+        assert not trials.duplicated(fields).any()
+        assert set(trials[fields].itertuples(index=False, name=None)) == expected
+        aggregate = aggregate_trials(trials.to_dict("records"), cfg["data"]["seeds"])
+        saved = pd.read_csv(folder / "hpo_aggregated.csv")
+        keys = [field for field in fields if field != "seed"]
+        joined = pd.DataFrame(aggregate).merge(saved, on=keys, suffixes=("_new", "_old"), validate="one_to_one")
+        assert len(joined) == len(aggregate) == len(saved)
+        gap = max(float(abs(joined[c + "_new"] - joined[c + "_old"]).max())
+                  for c in ["val_loss_mean", "val_loss_std", "val_accuracy_mean"])
+        assert gap < 1e-12
+        winner = select_global_config(aggregate)
+        selected = json.loads((folder / "selected_global.json").read_text())
+        for key, value in winner.items():
+            assert np.isclose(value, selected[key]) if isinstance(value, (float, int)) else value == selected[key]
+        selected_rows = [r for r in aggregate if all(r[k] == winner[k] for k in keys if k != "D")]
+        evidence["hpo"][relative] = {"trials": len(trials), "aggregate_max_difference": gap,
+            "selection": winner, "selected_budget_fractions": {r["D"]: r["fraction_best_near_budget_limit"] for r in selected_rows},
+            "raw_trial_metric_files": len(list((folder / "trials").glob("*/D_*_seed_*/trial_metrics.json")))}
+    for name in ["global_hpo_main_sweep", "places365_final_sweep"]:
+        frame = pd.read_csv(ROOT / name / "summary.csv")
+        aggregate = frame.groupby("D").test_loss.mean().sort_index()
+        sizes, losses = aggregate.index.to_numpy(float), aggregate.to_numpy()
+        fit = _fit_power_law(sizes[:-2], losses[:-2])
+        pred = scaling_law(sizes[-2:], fit["L_inf"], fit["b"], fit["beta"])
+        evidence["sweeps"][name] = {
+            "parameter_counts": frame[["backbone_total_parameters", "probe_trainable_parameters", "feature_dim"]].drop_duplicates().to_dict("records"),
+            "budget_by_D": frame.groupby("D")[["steps_ran", "examples_seen", "effective_epochs"]].agg(["min", "mean", "max"]).to_csv(),
+            "fingerprints_present": "cache_fingerprint" in frame,
+            "forward_size_holdout": {"fit_sizes": sizes[:-2].tolist(), "held_sizes": sizes[-2:].tolist(),
+                "observed": losses[-2:].tolist(), "predicted": pred.tolist(),
+                "relative_error_percent": (100 * (pred / losses[-2:] - 1)).tolist()}}
+    paths = list((PROJECT / "src").glob("*.py")) + list(PROJECT.glob("*.py"))
+    paths += list((PROJECT / "tests").glob("*.py")) + list((PROJECT / "configs").glob("*.yaml"))
+    paths += list(PROJECT.glob("*.sh")) + list(PROJECT.glob("requirements*.txt"))
+    for path in sorted(paths):
+        evidence["source_sha256"][str(path.relative_to(ROOT))] = hashlib.sha256(path.read_bytes()).hexdigest()
+        if path.suffix == ".py":
+            ast.parse(path.read_text(), filename=str(path))
+        if path.suffix == ".sh":
+            subprocess.run(["bash", "-n", str(path)], check=True)
+    evidence["static_checks"] = {"python_syntax": sum(p.suffix == ".py" for p in paths),
+                                 "shell_syntax": sum(p.suffix == ".sh" for p in paths)}
+    evidence["environment"] = {package: version(package) for package in
+        ["torch", "torchvision", "numpy", "pandas", "matplotlib", "pytest", "PyYAML"]}
+    destination = Path(__file__).with_name("additional_evidence.json")
+    destination.write_text(json.dumps(evidence, indent=2, allow_nan=False) + "\n")
+    print(f"Validated {len(evidence['configs'])} dry runs and {sum(v['trials'] for v in evidence['hpo'].values())} HPO trial rows")
+
+
+if __name__ == "__main__":
+    main()

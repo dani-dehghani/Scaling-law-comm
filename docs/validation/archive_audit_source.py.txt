@@ -1,0 +1,170 @@
+"""Read-only checks of copied experiments; never trains or runs inference.
+
+Writes a compact evidence bundle to --output-dir, not to the source results.
+Requires the same scientific Python dependencies as the analysis pipeline.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import itertools
+import json
+import shutil
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+from scipy.optimize import least_squares
+
+from src.config import load_config
+from src.sweep import validate_cached_trial, validate_cached_evaluation
+from promote_places365_final_config import assess_hpo
+
+
+def read_json(path):
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def fingerprint(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def require(condition, message):
+    if not condition:
+        raise ValueError(message)
+
+
+def independent_fit(sizes, loss):
+    """Reimplement the recorded positive Huber/log-loss objective, not its API."""
+    def residual(theta):
+        floor, amplitude, exponent = np.exp(theta)
+        return np.log(floor + amplitude * sizes ** (-exponent)) - np.log(loss)
+    fits = []
+    for fraction, exponent in itertools.product([.1, .5, .9], [.1, .3, .6, 1.]):
+        floor = loss.min() * fraction
+        amplitude = (loss.max() - floor) * sizes.min() ** exponent
+        result = least_squares(residual, np.log([floor, amplitude, exponent]),
+                               loss="huber", f_scale=.05, max_nfev=10000)
+        if result.success and np.isfinite(result.x).all():
+            fits.append(result)
+    require(bool(fits), "Independent fit failed")
+    floor, amplitude, exponent = np.exp(min(fits, key=lambda r: r.cost).x)
+    return {"L_inf": float(floor), "b": float(amplitude), "beta": float(exponent)}
+
+
+def verify_sweep(folder, destination):
+    cfg = read_json(folder / "config_snapshot.json")
+    complete = read_json(folder / "completion.json")
+    frame = pd.read_csv(folder / "summary.csv")
+    expected = set(itertools.product(cfg["data"]["dataset_sizes"], cfg["data"]["seeds"]))
+    require(not frame.duplicated(["D", "seed"]).any(), "Duplicate sweep identities")
+    require(set(zip(frame.D, frame.seed)) == expected and len(frame) == len(expected), "Incomplete sweep")
+    require(complete["training_complete"] and complete["test_evaluation_complete"], "Sweep not complete")
+    require(complete["expected_runs"] == len(expected) and complete["evaluated_runs"] == len(expected), "Wrong completion counts")
+    require(np.isfinite(frame[["test_loss", "test_accuracy", "best_val_loss", "best_val_accuracy"]]).all().all(), "Nonfinite metrics")
+    conditions = {"learning_rate": cfg["probe"]["learning_rate"],
+                  "weight_decay": cfg["probe"]["weight_decay"],
+                  "batch_size": cfg["probe"]["batch_size"], "schedule": cfg["probe"]["schedule"],
+                  "model_name": cfg["model"]["name"], "experiment": cfg["experiment"]["name"],
+                  "configured_budget": cfg["probe"]["max_steps"], "frozen_backbone": True}
+    for field, value in conditions.items():
+        require(frame[field].eq(value).all(), f"Wrong recorded condition: {field}")
+    for row in frame.to_dict("records"):
+        run = folder / "runs" / f"D_{int(row['D']):05d}_seed_{int(row['seed'])}"
+        trial, metrics = read_json(run / "trial_metrics.json"), read_json(run / "metrics.json")
+        validate_cached_trial(trial, {**conditions, "D": row["D"], "seed": row["seed"]}, run)
+        validate_cached_evaluation(metrics, trial, run)
+        for key in ["D", "seed", "test_loss", "test_accuracy", "best_val_loss", "best_val_accuracy", "best_step", "steps_ran"]:
+            require(np.isclose(float(row[key]), float(metrics[key]), rtol=0, atol=1e-12), f"Metric mismatch {run}: {key}")
+        history = read_json(run / "history.json")["history"]
+        best = [r for r in history if r["step"] == trial["best_step"]]
+        require(len(best) == 1 and np.isclose(best[0]["val_loss"], trial["best_val_loss"], rtol=0, atol=1e-12), "Checkpoint/history mismatch")
+        require(len(history) == trial["evaluations_ran"] and history[-1]["step"] == trial["steps_ran"], "History length mismatch")
+    for seed in cfg["data"]["seeds"]:
+        previous = np.array([], dtype=np.int64)
+        for size in cfg["data"]["dataset_sizes"]:
+            subset = np.load(folder / "subsets" / f"seed_{seed}" / f"D_{size:05d}_original_indices.npy", allow_pickle=False)
+            require(len(subset) == size and len(np.unique(subset)) == size, "Invalid subset membership")
+            require(np.isin(previous, subset, assume_unique=True).all(), "Subsets are not nested")
+            previous = subset
+    aggregate = frame.groupby("D", as_index=False).agg(
+        test_loss_mean=("test_loss", "mean"), test_loss_std=("test_loss", "std"),
+        test_accuracy_mean=("test_accuracy", "mean"), test_accuracy_std=("test_accuracy", "std"),
+        n_seeds=("seed", "nunique"))
+    stored = pd.read_csv(folder / "aggregated_by_D.csv").sort_values("D").reset_index(drop=True)
+    gap = float(np.abs(aggregate[stored.columns].to_numpy() - stored.to_numpy()).max())
+    require(gap < 1e-12, "Aggregate table mismatch")
+    fit = independent_fit(aggregate.D.to_numpy(float), aggregate.test_loss_mean.to_numpy())
+    saved = read_json(folder / "scaling_fit.json")
+    require(all(np.isclose(fit[k], saved[k], rtol=1e-6, atol=1e-8) for k in fit), "Saved fit not reproduced")
+    destination.mkdir(parents=True, exist_ok=True)
+    names = ["summary.csv", "aggregated_by_D.csv", "scaling_fit.json", "config_snapshot.json", "completion.json"]
+    for name in names:
+        shutil.copy2(folder / name, destination / name)
+    hashes = {name: fingerprint(folder / name) for name in names}
+    return {"runs": len(frame), "sizes": len(aggregate), "checks": "passed",
+            "checkpoints_histories_and_nested_subsets_checked": len(frame),
+            "max_aggregate_difference": gap, "independent_fit": fit,
+            "smallest": aggregate.iloc[0].to_dict(), "largest": aggregate.iloc[-1].to_dict(),
+            "last_accuracy_increment_pp": float(100 * (aggregate.test_accuracy_mean.iloc[-1] - aggregate.test_accuracy_mean.iloc[-2])),
+            "source_sha256": hashes,
+            "source_root": folder.name}
+
+
+def verify_hpo(folder, destination):
+    selection, failures = assess_hpo(folder)
+    require(not failures, f"HPO acceptance failure: {failures}")
+    cfg = read_json(folder / "config_snapshot.json")
+    trials = pd.read_csv(folder / "hpo_trials.csv")
+    require(np.isfinite(trials[["best_val_loss", "best_val_accuracy"]]).all().all(), "Nonfinite HPO trial metrics")
+    require(trials.best_val_loss.gt(0).all() and trials.best_val_accuracy.between(0, 1).all(), "Invalid HPO trial metrics")
+    keys = ["D", "learning_rate", "weight_decay", "schedule", "batch_size"]
+    expected = set(itertools.product(cfg["data"]["dataset_sizes"], cfg["hpo"]["learning_rates"],
+        cfg["hpo"]["weight_decays"], cfg["hpo"]["schedules"], cfg["hpo"]["batch_sizes"], cfg["data"]["seeds"]))
+    require(not trials.duplicated(keys + ["seed"]).any(), "Duplicate HPO identities")
+    require(set(trials[keys + ["seed"]].itertuples(index=False, name=None)) == expected, "HPO coverage failure")
+    aggregate = trials.groupby(keys, as_index=False).agg(val_loss_mean=("best_val_loss", "mean"),
+        val_loss_std=("best_val_loss", "std"), val_accuracy_mean=("best_val_accuracy", "mean"), n_seeds=("seed", "nunique"))
+    stored = pd.read_csv(folder / "hpo_aggregated.csv")
+    joined = aggregate.merge(stored, on=keys, suffixes=("_new", "_saved"), validate="one_to_one")
+    columns = ["val_loss_mean", "val_loss_std", "val_accuracy_mean", "n_seeds"]
+    gap = max(float(np.abs(joined[c + "_new"] - joined[c + "_saved"]).max()) for c in columns)
+    require(gap < 1e-12, "HPO aggregate mismatch")
+    aggregate["regret"] = aggregate.val_loss_mean / aggregate.groupby("D").val_loss_mean.transform("min") - 1
+    ranked = aggregate.groupby(keys[1:], as_index=False).regret.mean().sort_values(["regret"] + keys[1:])
+    winner = ranked.iloc[0]
+    for key in keys[1:]:
+        require(winner[key] == selection[key], f"Independent HPO selection differs: {key}")
+    require(np.isclose(winner.regret, selection["mean_relative_regret"], atol=1e-12, rtol=0), "Regret mismatch")
+    destination.mkdir(parents=True, exist_ok=True)
+    for name in ["completion.json", "config_snapshot.json", "hpo_aggregated.csv", "hpo_best_by_D.csv", "selected_by_D.json", "selected_global.json"]:
+        shutil.copy2(folder / name, destination / name)
+    return {"trials": len(trials), "aggregate_rows": len(aggregate), "checks": "passed",
+            "max_aggregate_difference": gap, "selection": selection}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--results-root", type=Path, required=True)
+    parser.add_argument("--output-dir", type=Path, required=True)
+    args = parser.parse_args()
+    root, out = args.results_root.resolve(), args.output_dir.resolve()
+    sources = [root / name for name in ["global_hpo_main_sweep", "places365_final_sweep", "places365_wd_boundary_analysis"]]
+    require(all(out != p and p not in out.parents for p in sources), "Output must be outside the original experiment folders")
+    config_count = 0
+    for path in (Path(__file__).resolve().parent / "configs").glob("*.yaml"):
+        load_config(path)
+        config_count += 1
+    evidence = {"checked_in_configs_validated": config_count,
+                "cifar100": verify_sweep(sources[0], out / "cifar100"),
+                "places365": verify_sweep(sources[1], out / "places365"),
+                "places365_hpo_boundary": verify_hpo(sources[2], out / "places365_hpo_boundary"),
+                "limitations": ["No original image or feature-cache split audit: complete leakage exclusion is not established.",
+                                "Historical executed source commits are not identified by these result snapshots.",
+                                "Checks do not rerun training, feature extraction, or protected evaluation."]}
+    (out / "verification.json").write_text(json.dumps(evidence, indent=2, allow_nan=False) + "\n", encoding="utf-8")
+    print(json.dumps(evidence, indent=2))
+
+
+if __name__ == "__main__":
+    main()

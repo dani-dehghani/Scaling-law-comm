@@ -1,0 +1,96 @@
+{
+  "checked_in_configs_validated": 10,
+  "cifar100": {
+    "runs": 120,
+    "sizes": 12,
+    "checks": "passed",
+    "checkpoints_histories_and_nested_subsets_checked": 120,
+    "max_aggregate_difference": 4.440892098500626e-16,
+    "independent_fit": {
+      "L_inf": 0.649303498739573,
+      "b": 39.32029459244541,
+      "beta": 0.5204128314735563
+    },
+    "smallest": {
+      "D": 200.0,
+      "test_loss_mean": 3.1866576782608034,
+      "test_loss_std": 0.04206595757850929,
+      "test_accuracy_mean": 0.319,
+      "test_accuracy_std": 0.009831581764904378,
+      "n_seeds": 10.0
+    },
+    "largest": {
+      "D": 45000.0,
+      "test_loss_mean": 0.7894267805767059,
+      "test_loss_std": 0.002086002301005839,
+      "test_accuracy_mean": 0.76608,
+      "test_accuracy_std": 0.0013447841627727759,
+      "n_seeds": 10.0
+    },
+    "last_accuracy_increment_pp": 0.5690000000000084,
+    "source_sha256": {
+      "summary.csv": "98f1d44426b0e9a5cb112f69c6b1bbd67943180e2cde6eb101f9f4bb9b76a4a9",
+      "aggregated_by_D.csv": "37d51706148fb45acef07d9ca3c5cd4dd25be6c5c8cdf8639966c976c8442555",
+      "scaling_fit.json": "fd3c06895ff4a0e5747e081c0bf848eab1e86f8479add1c6074b9ea35a753ab8",
+      "config_snapshot.json": "a730b5d3a9d318f2a65e3921bedc885dcc1eb9f6546a5d3a290449196f673b08",
+      "completion.json": "61886151325e193b9947e0d96b587b2cb2ca521b899167b3d77a204f57df3628"
+    },
+    "source_root": "global_hpo_main_sweep"
+  },
+  "places365": {
+    "runs": 80,
+    "sizes": 8,
+    "checks": "passed",
+    "checkpoints_histories_and_nested_subsets_checked": 80,
+    "max_aggregate_difference": 4.440892098500626e-16,
+    "independent_fit": {
+      "L_inf": 1.9029826532940837,
+      "b": 53.33956547963706,
+      "beta": 0.46554092874257846
+    },
+    "smallest": {
+      "D": 1300.0,
+      "test_loss_mean": 3.7340558018253276,
+      "test_loss_std": 0.044048641534458956,
+      "test_accuracy_mean": 0.23471232876712325,
+      "test_accuracy_std": 0.00490578443038211,
+      "n_seeds": 10.0
+    },
+    "largest": {
+      "D": 500000.0,
+      "test_loss_mean": 2.0610729116283055,
+      "test_loss_std": 0.0034811453981518597,
+      "test_accuracy_mean": 0.46667671232876706,
+      "test_accuracy_std": 0.0011876395446065089,
+      "n_seeds": 10.0
+    },
+    "last_accuracy_increment_pp": 0.2873972602739694,
+    "source_sha256": {
+      "summary.csv": "c2e1dac19731e30cfaaad324b6c0c49c63316f65f00803c78de04cc60224a73f",
+      "aggregated_by_D.csv": "865f598ea24bb6fef50c9d1df6bdd7479f1ffbd7b1fbe248ef2622b7f7e740e7",
+      "scaling_fit.json": "7ede12dd960d51563af9c4de5772f504e03fa010379edc3c4d40e99cc5e989c7",
+      "config_snapshot.json": "dcb4c60d7c067e161aa55f82b1fa58a59a15f3b15e2b060bc7aa566ab324e52b",
+      "completion.json": "8b992846db0d399e1ce51f669a66a1996043532215e5908231f6a56a2a49f4ba"
+    },
+    "source_root": "places365_final_sweep"
+  },
+  "places365_hpo_boundary": {
+    "trials": 1920,
+    "aggregate_rows": 192,
+    "checks": "passed",
+    "max_aggregate_difference": 8.881784197001252e-16,
+    "selection": {
+      "batch_size": 256,
+      "dataset_sizes_compared": 8,
+      "learning_rate": 0.0002,
+      "mean_relative_regret": 0.030199215915568622,
+      "schedule": "constant",
+      "weight_decay": 1.0
+    }
+  },
+  "limitations": [
+    "No original image or feature-cache split audit: complete leakage exclusion is not established.",
+    "Historical executed source commits are not identified by these result snapshots.",
+    "Checks do not rerun training, feature extraction, or protected evaluation."
+  ]
+}

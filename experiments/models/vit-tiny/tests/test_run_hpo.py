@@ -4,7 +4,7 @@ import json
 import numpy as np
 import pytest
 
-from run_hpo import (
+from cli.run_hpo import (
     _configurations,
     _expected_count,
     _finalize_results,

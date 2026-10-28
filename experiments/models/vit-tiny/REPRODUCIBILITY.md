@@ -1,25 +1,11 @@
-# Reproducibility and evidence scope
+# Reproducibility and evidence scope — 28 October 2026
 
-## Provenance
+The current [compact verification](../../../docs/validation/compact_verification.json) checks five saved sweep tables (425 rows), four complete HPO grids (17,520 rows), aggregates and global selection, and independently recalculates saved point fits. The [local archive audit](../../../docs/validation/local_archive_verification.json) also checks 200 main heads, histories and nested ID sets. No new feature extraction, historical retraining or final-data inference was performed.
 
-This snapshot contains the current local code and configurations plus copies of completed result artifacts. `MANIFEST.csv` lists relative source locations in the research workspace and SHA-256 checksums. Empty source fields denote documentation or derivatives generated for this snapshot. Source references to the earlier package denote byte-identical evidence copies, not a new training run.
+The original GitHub numerical source is preserved; relocated entry points adjust their project root and imports/callers. Newer local working-source repairs are not silently merged. Source history and unresolved gaps are described in [implementation status](../../../docs/implementation_status.md). The exact source/environment used for every old run remains unverified.
 
-The current code has not been established as the exact historical revision for every run. Full historical environment and execution provenance have not been verified. HPO trial tables contain recorded environment fields, but those are not a complete independent reproduction guarantee. Dependency files specify installation requirements, not an immutable executed environment.
+The former reproducibility note, manifest and validation describe the October 1 package. They are preserved in [archival package records](artifacts/archival_package_2026-10-01/README.md). Their old test counts and “Places pending” statement are historical, not current conclusions. The new [artifact manifest](artifacts/MANIFEST.csv) hashes files at their current paths and preserves byte identity of imported evidence; hashes establish identity, not correctness.
 
-## Checks performed
+Images, historical feature tensors, raw execution logs, head weights and sampled ID arrays are outside this compact repository. Original image content, duplicate leakage, weight/preprocessing execution and feature-label alignment were not independently certified. Requirement ranges are not an environment lock. A completion flag and passing tests do not close these gaps.
 
-- CIFAR-100 main: all 120 expected unique (D, seed) pairs; aggregate means and sample standard deviations agree with the run table.
-- Core CIFAR-100 HPO: exact configured grid coverage for 7,920 trials, no duplicate keys, finite positive validation losses.
-- Places365 global and refinement HPO: exact grid coverage for 5,280 and 2,400 trials, no duplicate keys, finite positive validation losses.
-- Selected Places365 refinement recipe: 80 runs and zero budget-warning runs under the code's near-limit heuristic.
-- Python source syntax: passed.
-- Local tests: 36 passed, three skipped, zero failures. The skipped tests require scipy.optimize, which cannot import because of a local macOS SciPy binary loading error. Scaling-fit recovery and those fitting-input checks remain unverified in this environment.
-- Places365 boundary config dry run: 24 recipes, eight sizes, ten seeds, 1,920 trials.
-
-See `VALIDATION.json`. No GPU training, new held-out evaluation, or independent refitting was performed to prepare this snapshot. The reported fits were copied from completed artifacts.
-
-## Archival requirements and limitations
-
-Raw images, feature caches, linear-head checkpoints, sampled subset arrays, complete histories and original execution logs remain outside this Git snapshot. Retain them separately for reproduction. Bootstrap intervals, fit-range sensitivity, residual diagnostics and a completed matched-control analysis are not supplied here as verified final evidence. Earlier exploratory analyses are not treated as final uncertainty results in this snapshot.
-
-Remote Places365 boundary execution is researcher-reported and has no completed local evidence. The final config is blocked pending its selection checks. CIFAR-100 and Places365 held-out metrics must not be used to revise HPO selection.
+The bootstrap and leave-one-size-out results in [dated diagnostics](../../../reports/tables/diagnostics_2026-10-20/README.md) are separately labeled derivatives; their bootstrap was not rerun here. Report error bars show seed sample SD, not a confidence interval. See [validation record](../../../docs/validation/README.md) for current executed checks and environment limitations.

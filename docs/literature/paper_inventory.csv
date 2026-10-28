@@ -1,0 +1,16 @@
+id,local_filename,sha256,pages,duplicate_of,primary_url
+P01,2509.12818v1.pdf,5863f31ea24f62a392cdc765e0606cddd8d3e53644a31f5bab901c72c2c89ebc,21,,https://arxiv.org/abs/2509.12818
+P02,2607.16766v1.pdf,cafe55927718e8d91d67f88bab637a244c318fa42fd98f221f442d505167f768,14,,https://arxiv.org/abs/2607.16766
+P03,2608.00368v1.pdf,5fd34ff51746f663f1a9a7af1a8c73a30c0fc66f3e042ef54562929fc85103b5,6,,https://arxiv.org/abs/2608.00368
+P04,3746027.3754916.pdf,5ab2b8822153da9e8783ad623527ca65027e8c5b36e0741f4641914595b241d0,9,,https://doi.org/10.1145/3746027.3754916
+P05,3835_budgeted_training_for_vision_t-2.pdf,9e0d17912beb25281313f8ef075e8e2a1408e4aaafa9f93d2001a30769e3e15a,16,,https://openreview.net/pdf?id=sVzBN-DlJRi
+,3835_budgeted_training_for_vision_t.pdf,9e0d17912beb25281313f8ef075e8e2a1408e4aaafa9f93d2001a30769e3e15a,,P05,https://openreview.net/pdf?id=sVzBN-DlJRi
+P06,Beyond_Transmitting_Bits_Context_Semantics_and_Task-Oriented_Communications.pdf,c75e02b8a1341fda4453b20d8659450de4082c78bb02c7efa4c4b029279ebbc7,37,,https://doi.org/10.1109/JSAC.2022.3223408
+P07,Feature-Foundation_Model_Evolution_for_Low-Latency_Semantic_Communication.pdf,1d146fe9e0a9e2743043c713367f6d3d648fff1297c81862b4dbe97bae3eb58f,17,,https://doi.org/10.1109/TWC.2026.3659294
+P08,How to train your ViT.pdf,b51dee5203da65f13c23a66f14cd7044cfae3586d6b8db42b9e7822096dfef08,16,,https://openreview.net/forum?id=4nPswr1KcP
+,How to train your ViT_Steiner et al..pdf,b51dee5203da65f13c23a66f14cd7044cfae3586d6b8db42b9e7822096dfef08,,P08,https://openreview.net/forum?id=4nPswr1KcP
+P09,NeurIPS-2022-revisiting-neural-scaling-laws-in-language-and-vision-Paper-Conference.pdf,c964523d301632c18970d0e5a1947fa14ee4ea69e6a642249ba1d899b9575cbc,13,,https://proceedings.neurips.cc/paper_files/paper/2022/hash/8c22e5e918198702765ecff4b20d0a90-Abstract-Conference.html
+P10,Scaling_Vision_Transformers.pdf,15bdcd9ce5b0b84f0e518a9eb08973d9104f8ce4f5bc4fa20d95946417e1e3d4,10,,https://openaccess.thecvf.com/content/CVPR2022/html/Zhai_Scaling_Vision_Transformers_CVPR_2022_paper.html
+P11,Tuning_Pre-trained_Model_via_Moment_Probing.pdf,fb632b20855953ac606cc026f748b6b870fd04dd76f249d5e5f5c1d74726e1dc,11,,https://openaccess.thecvf.com/content/ICCV2023/html/Gao_Tuning_Pre-trained_Model_via_Moment_Probing_ICCV_2023_paper.html
+P12,Wang_Scaling_Pre-training_to_One_Hundred_Billion_Data_for_Vision_Language_CVPRF_2026_paper.pdf,5304622f5401893aa7dc34b9213c14ee345003ea0ebee9868a1e3bdec2c54197,12,,https://arxiv.org/abs/2502.07617
+P13,Zero-Shot_Semantic_Communication_With_Multimodal_Foundation_Models.pdf,cc2c14613df3a018e8e58e1491414b331fe7f7a8eaec68ee9927e2dcb6bb0883,6,,https://doi.org/10.1109/TVT.2025.3632893
