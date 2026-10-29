@@ -1,4 +1,4 @@
-> Historical protocol. Original scientific text and old command spelling are preserved; use the [protocol index](README.md) and [current execution guide](../README.md) for status and relocated commands.
+> Historical protocol. Original scientific text and old command spelling are preserved; use the [protocol index](README.md) and [current execution guide](../docs/implementation.md) for status and relocated commands.
 
 # Full HPO protocol for the ViT-Tiny data-scaling experiment
 

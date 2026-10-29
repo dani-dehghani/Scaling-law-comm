@@ -234,3 +234,7 @@ References named in the roadmap but absent as full papers from this folder—inc
 6. Freeze the optimization recipe for the main fixed-recipe curve. If asking about best achievable performance at each D, a separately named, independently budgeted per-D optimization study is needed.
 7. Assess larger-D prediction and fit-family sensitivity. More seed repeats do not fix a misspecified curve.
 8. Define N, feature width, transmitted dimension, channel noise and trainable parameter counts separately before adding a channel.
+
+## Extension — 29 October 2026
+
+The [expanded method/contribution comparison](dataset_sweep_and_novelty.md) includes the 13 supplied unique papers and seven additional primary works with clearly marked review depth. The [detailed CSV](dataset_sweep_and_novelty.csv) and [search log](search_log_2026-10-29.csv) support a candidate question; they do not certify an unprecedented contribution. The original inventory still describes only the supplied files.

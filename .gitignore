@@ -1,24 +1,30 @@
 .DS_Store
-*.pyc
+.Rhistory
 __pycache__/
+*.py[cod]
 
 .venv/
 venv/
 env/
 
+.pytest_cache/
+.mypy_cache/
 .ipynb_checkpoints/
 
 data/
 datasets/
+cache/
 results/
 runs/
 outputs/
 checkpoints/
 models/
 wandb/
+tmp/
 
 *.log
-
-!experiments/models/
-experiments/models/*
-!experiments/models/vit-tiny/
+*.pt
+*.pth
+*.npy
+*.npz
+*.tar.gz

@@ -12,7 +12,7 @@ from matplotlib.ticker import FuncFormatter
 
 HERE = Path(__file__).resolve().parent
 REPORTS = HERE.parent / "artifacts"
-OUT = HERE.parents[3] / "reports" / "figures" / "historical_comparison"
+OUT = HERE.parent / "reports" / "figures" / "historical_comparison"
 OUT.mkdir(parents=True, exist_ok=True)
 RUNS = [
     ("before", "baselines/formal_lr_003", "Before: manual LR 0.003", "#c66528"),

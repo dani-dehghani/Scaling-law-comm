@@ -3,14 +3,14 @@ E00,Smoke path check,local exploratory; not imported,1,LOCAL_ARCHIVE/smoke_D50,r
 E01,Three-size pilot,local exploratory; not imported,3,LOCAL_ARCHIVE/pilot_three_points,reports/thesis_progress.md,"D=500,5000,45000; one seed; LR=.01."
 E02a,Early learning-rate check .01,local exploratory; not imported,9,LOCAL_ARCHIVE/lr_check_001,reports/thesis_progress.md,Three sizes × three seeds; exploratory.
 E02b,Early learning-rate check .03,local exploratory; not imported,9,LOCAL_ARCHIVE/lr_check_003,reports/thesis_progress.md,Three sizes × three seeds; exploratory.
-E03,Historical CIFAR-100 baseline,compact tables checked,35,experiments/models/vit-tiny/artifacts/baselines/initial_formal_v1,reports/thesis_progress.md,7 sizes × 5 seeds; epoch-based exploratory recipe.
-E04,Historical CIFAR-100 baseline,compact tables checked,70,experiments/models/vit-tiny/artifacts/baselines/formal_lr_001,reports/thesis_progress.md,7 sizes × 10 seeds; LR=.001.
-E05,Historical CIFAR-100 baseline,compact tables checked,120,experiments/models/vit-tiny/artifacts/baselines/formal_lr_003,reports/thesis_progress.md,12 sizes × 10 seeds; LR=.003.
+E03,Historical CIFAR-100 baseline,compact tables checked,35,artifacts/baselines/initial_formal_v1,reports/thesis_progress.md,7 sizes × 5 seeds; epoch-based exploratory recipe.
+E04,Historical CIFAR-100 baseline,compact tables checked,70,artifacts/baselines/formal_lr_001,reports/thesis_progress.md,7 sizes × 10 seeds; LR=.001.
+E05,Historical CIFAR-100 baseline,compact tables checked,120,artifacts/baselines/formal_lr_003,reports/thesis_progress.md,12 sizes × 10 seeds; LR=.003.
 E06,Stage-1 learning-rate pilot,local exploratory; not imported,72,LOCAL_ARCHIVE/vit_tiny_data_scaling/results/hpo_lr_stage1,reports/thesis_progress.md,6 learning rates × 4 sizes × 3 seeds; 3000-step pilot; selected LR=.001.
-E07,CIFAR-100 global recipe selection,compact HPO grid and selection checked,7920,experiments/models/vit-tiny/artifacts/cifar100_core_hpo,reports/thesis_progress.md,66 recipes × 12 sizes × 10 seeds; 10000 steps. WD winner at upper edge.
-E08,Main CIFAR-100 fixed-recipe D curve,compact tables checked; final complete,120,experiments/models/vit-tiny/artifacts/cifar100_main,reports/thesis_progress.md,12 sizes × 10 seeds; .0001/.01; 30000-step ceiling.
-E09,Places365 broad global HPO,compact HPO grid and selection checked,5280,experiments/models/vit-tiny/artifacts/places365_global_hpo,reports/thesis_progress.md,66 recipes × 8 sizes × 10 seeds; 10000 steps.
-E10,Places365 HPO refinement,compact HPO grid and selection checked,2400,experiments/models/vit-tiny/artifacts/places365_refinement_hpo,reports/thesis_progress.md,30 recipes × 8 sizes × 10 seeds; 30000 steps; WD=.3 upper boundary.
-E11,Places365 extended WD check,compact HPO grid and selection checked,1920,experiments/models/vit-tiny/artifacts/places365_boundary_hpo,reports/thesis_progress.md,"24 recipes × 8 sizes × 10 seeds; selected .0002/1.0, interior."
-E12,Main Places365 fixed-recipe D curve,compact tables checked; final complete,80,experiments/models/vit-tiny/artifacts/places365_main,reports/thesis_progress.md,8 sizes × 10 seeds; .0002/1.0; 30000 steps.
+E07,CIFAR-100 global recipe selection,compact HPO grid and selection checked,7920,artifacts/cifar100_core_hpo,reports/thesis_progress.md,66 recipes × 12 sizes × 10 seeds; 10000 steps. WD winner at upper edge.
+E08,Main CIFAR-100 fixed-recipe D curve,compact tables checked; final complete,120,artifacts/cifar100_main,reports/thesis_progress.md,12 sizes × 10 seeds; .0001/.01; 30000-step ceiling.
+E09,Places365 broad global HPO,compact HPO grid and selection checked,5280,artifacts/places365_global_hpo,reports/thesis_progress.md,66 recipes × 8 sizes × 10 seeds; 10000 steps.
+E10,Places365 HPO refinement,compact HPO grid and selection checked,2400,artifacts/places365_refinement_hpo,reports/thesis_progress.md,30 recipes × 8 sizes × 10 seeds; 30000 steps; WD=.3 upper boundary.
+E11,Places365 extended WD check,compact HPO grid and selection checked,1920,artifacts/places365_boundary_hpo,reports/thesis_progress.md,"24 recipes × 8 sizes × 10 seeds; selected .0002/1.0, interior."
+E12,Main Places365 fixed-recipe D curve,compact tables checked; final complete,80,artifacts/places365_main,reports/thesis_progress.md,8 sizes × 10 seeds; .0002/1.0; 30000 steps.
 E13,Model-size/channel/matched-control experiments,planned; no completed evidence,0,,reports/thesis_progress.md,"Do not count plans, archives or duplicate folders as independent experiments."

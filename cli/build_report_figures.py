@@ -10,7 +10,7 @@ from matplotlib.ticker import FuncFormatter
 
 def main() -> None:
     experiment = Path(__file__).resolve().parents[1]
-    output = experiment.parents[2] / "reports" / "figures"
+    output = experiment / "reports" / "figures"
     output.mkdir(parents=True, exist_ok=True)
     datasets = [("cifar100_main", "CIFAR-100", "official test"),
                 ("places365_main", "Places365", "official validation used for final evaluation")]

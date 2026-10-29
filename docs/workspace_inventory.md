@@ -20,6 +20,6 @@ The original research archive remains outside Git as `LOCAL_ARCHIVE` (`vit_tiny_
 | Compressed archives and extracted copies | Containers or duplicates | Retained locally, not counted as repeated trials |
 | `Thesis Papers/` | 15 PDFs (13 unique), two planning DOCX files | Paraphrased review, file hashes and primary links only |
 
-`artifacts/` paths above are relative to the [ViT-Tiny implementation](../experiments/models/vit-tiny/README.md). Machine-readable experiment locations are root-relative in the [register](experiment_index.csv); `LOCAL_ARCHIVE/…` entries deliberately identify evidence not imported to Git.
+`artifacts/` paths above are relative to the repository root; see the [implementation guide](implementation.md). Machine-readable experiment locations are root-relative in the [register](experiment_index.csv); `LOCAL_ARCHIVE/…` entries deliberately identify evidence not imported to Git.
 
 The untouched original archive contains additional learning exports, logs and intermediate files. They are supporting history, not automatically verified thesis results. No files were deleted from that archive or the original paper folder. Local heads and subset arrays must be backed up separately; Git here is not their backup.

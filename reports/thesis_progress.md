@@ -53,7 +53,7 @@ The configured checkpoint is `vit_tiny_patch16_224.augreg_in21k_ft_in1k`. Its na
 
 Caching is scientifically reasonable for a frozen representation: all classifiers can reuse the same image features, reducing repeated encoder work and preventing augmentation differences between trials. The tradeoff is scope: cached features cannot implement adaptation inside the encoder, and they do not make encoder extraction or inference cost disappear. Training-time augmentation is absent on the cached-head path. The exact historical weight bytes, preprocessing execution and source-image alignment are not independently established by the available summaries; the historical feature tensors are not present locally.
 
-The implementation roles are [feature preparation](../experiments/models/vit-tiny/cli/prepare_features.py) and [feature/cache operations](../experiments/models/vit-tiny/src/feature_cache.py). The checkpoint name and feature dimensions are recorded in result tables. The decision to freeze and cache is supported by the implemented scope; no evidence establishes that it is the only or optimal thesis-wide design.
+The implementation roles are [feature preparation](../cli/prepare_features.py) and [feature/cache operations](../src/feature_cache.py). The checkpoint name and feature dimensions are recorded in result tables. The decision to freeze and cache is supported by the implemented scope; no evidence establishes that it is the only or optimal thesis-wide design.
 
 ### 3.2 Separate training, selection and final evaluation
 
@@ -67,7 +67,7 @@ CIFAR-100 uses exactly class-balanced subsets, so D is divisible by 100. At D=20
 
 Nesting makes the question easier to interpret: increasing D adds data rather than replacing the small dataset with an unrelated draw. Across sizes within a seed the observations are consequently correlated. Ten seeds vary subset membership and classifier initialization/training order; they do not represent ten independently pretrained encoders or ten independent benchmark test sets. At the CIFAR full-pool endpoint, subset membership is identical across seeds while initialization and order can still differ. Source-ID uniqueness does not rule out duplicated or near-duplicated image content.
 
-Implementation: [sampling.py](../experiments/models/vit-tiny/src/sampling.py). Local archive checks confirmed nested unique IDs for all 200 main runs. Arrays remain in the external archive, not in this compact repository.
+Implementation: [sampling.py](../src/sampling.py). Local archive checks confirmed nested unique IDs for all 200 main runs. Arrays remain in the external archive, not in this compact repository.
 
 ### 3.4 Train the classifier and choose a checkpoint
 
@@ -77,7 +77,7 @@ The trainer uses AdamW. The main curves use batch size 256, a constant learning 
 
 A shared rule aids interpretation, but early stopping produces different realized exposure. Very small datasets can be revisited many times. The ceiling is a convergence safeguard; the near-limit warning is a heuristic, not a proof of global convergence. Example from CIFAR D=45,000/seed 0: selected step 9,500, training stopped at 10,500, 525 validation records; selected validation loss about .80728, final loss .78942 and accuracy 76.73%. Validation and final metrics differ because the examples differ.
 
-Implementation: [probe.py](../experiments/models/vit-tiny/src/probe.py). Complete histories and heads were readable in the local audit but are not committed as compact artifacts.
+Implementation: [probe.py](../src/probe.py). Complete histories and heads were readable in the local audit but are not committed as compact artifacts.
 
 ### 3.5 Select one recipe per dataset, then evaluate
 
@@ -87,7 +87,7 @@ HPO means comparing learning rates and weight decay using internal validation. F
 
 This measures how far one recipe falls behind the best observed candidate at each size. Equal size weighting prevents a high-loss small-D point from dominating through its absolute scale. The selected recipe is a compromise across measured sizes. It is not necessarily optimal at every D or for accuracy, and changing the search space or budget changes the reference minima. Regret values from different search stages are not directly a common performance ranking.
 
-The final sweep trains that recipe across all D/seeds. The intended gate requires all runs and no near-budget warning before opening final features. The final score does not choose the checkpoint. [run_hpo.py](../experiments/models/vit-tiny/cli/run_hpo.py), [hpo.py](../experiments/models/vit-tiny/src/hpo.py) and [run_sweep.py](../experiments/models/vit-tiny/cli/run_sweep.py) implement this division. Current software validation limitations are documented below; a completion flag alone is not a full provenance guarantee.
+The final sweep trains that recipe across all D/seeds. The intended gate requires all runs and no near-budget warning before opening final features. The final score does not choose the checkpoint. [run_hpo.py](../cli/run_hpo.py), [hpo.py](../src/hpo.py) and [run_sweep.py](../cli/run_sweep.py) implement this division. Current software validation limitations are documented below; a completion flag alone is not a full provenance guarantee.
 
 ### 3.6 Aggregate, plot and fit
 
@@ -97,7 +97,7 @@ At each D the report shows the arithmetic mean and **sample standard deviation a
 
 The repository fitter enforces positive parameters through exponentiation, tries 12 starts, minimizes Huber residuals of log predicted total loss minus log observed total loss (`f_scale=.05`), and retains the lowest-cost converged candidate. Every D mean has equal residual weight. It does not weight by seed variance or explicitly model cross-size covariance. `rmse_log_loss` is an in-sample diagnostic after fitting, not predictive accuracy.
 
-The floor `L_inf` is an estimated parameter under this function and protocol. It is not proved irreducible error, a representation ceiling, or a channel-induced floor. Likewise beta describes this dataset/representation/recipe/range; it is not an intrinsic universal constant. [scaling.py](../experiments/models/vit-tiny/src/scaling.py) contains the exact fitting objective.
+The floor `L_inf` is an estimated parameter under this function and protocol. It is not proved irreducible error, a representation ceiling, or a channel-induced floor. Likewise beta describes this dataset/representation/recipe/range; it is not an intrinsic universal constant. [scaling.py](../src/scaling.py) contains the exact fitting objective.
 
 ## 4. Scientific progression and what changed
 
@@ -141,7 +141,7 @@ The following tables are generated from the original saved aggregates. Accuracy 
 
 ![CIFAR-100 measured loss and accuracy](figures/cifar100_main.png)
 
-Evidence: [aggregate](../experiments/models/vit-tiny/artifacts/cifar100_main/aggregated_by_D.csv), [individual runs](../experiments/models/vit-tiny/artifacts/cifar100_main/summary.csv), [executed configuration snapshot](../experiments/models/vit-tiny/artifacts/cifar100_main/config_snapshot.json), [completion](../experiments/models/vit-tiny/artifacts/cifar100_main/completion.json), [original fit](../experiments/models/vit-tiny/artifacts/cifar100_main/scaling_fit.json). The new figure uses logarithmic D and linear vertical axes; uncertainty is ±1 seed SD.
+Evidence: [aggregate](../artifacts/cifar100_main/aggregated_by_D.csv), [individual runs](../artifacts/cifar100_main/summary.csv), [executed configuration snapshot](../artifacts/cifar100_main/config_snapshot.json), [completion](../artifacts/cifar100_main/completion.json), [original fit](../artifacts/cifar100_main/scaling_fit.json). The new figure uses logarithmic D and linear vertical axes; uncertainty is ±1 seed SD.
 
 ### Places365
 
@@ -158,7 +158,7 @@ Evidence: [aggregate](../experiments/models/vit-tiny/artifacts/cifar100_main/agg
 
 ![Places365 measured loss and accuracy](figures/places365_main.png)
 
-Evidence: [aggregate](../experiments/models/vit-tiny/artifacts/places365_main/aggregated_by_D.csv), [individual runs](../experiments/models/vit-tiny/artifacts/places365_main/summary.csv), [executed configuration snapshot](../experiments/models/vit-tiny/artifacts/places365_main/config_snapshot.json), [completion](../experiments/models/vit-tiny/artifacts/places365_main/completion.json), [original fit](../experiments/models/vit-tiny/artifacts/places365_main/scaling_fit.json). The new figure uses logarithmic D and linear vertical axes; uncertainty is ±1 seed SD.
+Evidence: [aggregate](../artifacts/places365_main/aggregated_by_D.csv), [individual runs](../artifacts/places365_main/summary.csv), [executed configuration snapshot](../artifacts/places365_main/config_snapshot.json), [completion](../artifacts/places365_main/completion.json), [original fit](../artifacts/places365_main/scaling_fit.json). The new figure uses logarithmic D and linear vertical axes; uncertainty is ±1 seed SD.
 
 CIFAR-100 improves from 31.900% at D=200 to **76.608% at D=45,000**; loss falls from 3.186658 to .789427. The final increase from 35,000 to 45,000 is .569 percentage points. Places365 improves from 23.471% at D=1,300 to **46.668% at D=500,000**; loss falls from 3.734056 to 2.061073. The final increase from 250,000 to 500,000 is about .287 percentage points. These are observed changes in the recorded means, not isolated causal estimates with all sources of uncertainty controlled.
 
@@ -203,7 +203,7 @@ The remaining communication papers and tutorial (P02/P03/P06/P07/P13) inform tas
 
 ## 7. Evidence checks, provenance and limits
 
-The [portable compact verifier](../experiments/models/vit-tiny/cli/verify_artifacts.py) checks exact configured identities, absence of duplicates, metric ranges, mean/sample-SD agreement, four complete HPO grids, independent global-recipe selection and saved fit agreement. [Recorded verification](../docs/validation/compact_verification.json) covers 425 sweep rows and 17,520 HPO rows. Table gaps are at floating-point roundoff. The fresh [local archive audit](../docs/validation/local_archive_verification.json) additionally opens 200 saved main heads/histories and checks subset IDs; its [source snapshot](../docs/validation/archive_audit_source.py.txt) records the procedure. These checks do not execute head predictions on the original final features, which are unavailable here.
+The [portable compact verifier](../cli/verify_artifacts.py) checks exact configured identities, absence of duplicates, metric ranges, mean/sample-SD agreement, four complete HPO grids, independent global-recipe selection and saved fit agreement. [Recorded verification](../docs/validation/compact_verification.json) covers 425 sweep rows and 17,520 HPO rows. Table gaps are at floating-point roundoff. The fresh [local archive audit](../docs/validation/local_archive_verification.json) additionally opens 200 saved main heads/histories and checks subset IDs; its [source snapshot](../docs/validation/archive_audit_source.py.txt) records the procedure. These checks do not execute head predictions on the original final features, which are unavailable here.
 
 The reorganized GitHub numerical `src/` modules are kept byte-identical to the original clone. Entry points and callers move, and the shell default is corrected to the documented main CIFAR config. The more developed local working project is a different source version; its later repairs are not silently attributed to old runs or merged as part of this organization. The exact historical training source/environment is not established for every stage. Requirement ranges describe installation, not a locked historical execution environment.
 
@@ -234,3 +234,13 @@ For a methods chapter, adapt sections 2–3 and cite the exact snapshot and prot
 For the next supervisor meeting, walk through the pipeline, explain one D/seed example, show each main curve and the exposure plot, then present the difference between the completed D baseline and planned N/channel study. A useful closing decision is which question the next protocol should answer. The [script guide](../docs/script_guide.md) provides simple flows and pseudocode for the programs, so the repository can support learning as well as storage.
 
 The README's dated update refers to this evidence reconciliation on 28 October. Existing experiments were not rerun this week, and no unsupported claim is made that their execution dates fall within “last week.” Git history dates track publishing; copied file modification dates do not establish scientific chronology.
+
+## 10. Follow-up review and candidate research question — 29 October 2026
+
+The root-layout code passed 42 tests and compact-table verification after the researcher moved the implementation to the repository root. These are software/evidence-consistency checks, not new scientific experiments. Current navigation/register corrections are included in the root-layout update; [the dated check record](../docs/validation/layout_checks_2026-10-29.json) distinguishes them from the earlier review.
+
+The [expanded comparison](../docs/literature/dataset_sweep_and_novelty.md), [20-row CSV](../docs/literature/dataset_sweep_and_novelty.csv) and [search log](../docs/literature/search_log_2026-10-29.csv) add contribution/gap fields and seven adjacent primary works. Review depth is explicit: three additional method reviews, one framework screen and three abstract-only screens. The original supplied-paper inventory remains 13 unique PDFs.
+
+This extension narrows the novelty boundary. Frozen-probe data comparisons, feature-learning curves and pretrained-feature communication are established ingredients. The proposed question is whether channel width/noise change the *rate or amplitude* of benefit from additional downstream labels, and whether competing descriptions predict reserved larger-D measurements. This is a candidate empirical study, not a certified first-ever result. It should be challenged against the closest work before commitment.
+
+The [proposed protocol](../docs/research_question.md) defines offset-only, common-rate and condition-specific-rate alternatives; separates a small feasibility pilot from formal evidence; and specifies head-capacity, power, convergence, exposure and noise controls. It also preserves the distinction between the planning documents' N-first sequence and a later D-by-channel study. Feature-cache recovery and known integrity issues remain prerequisites. No candidate-channel outcome, exponent change, target-data requirement or new experimental result is asserted here.

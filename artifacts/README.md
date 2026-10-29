@@ -12,6 +12,6 @@ Original numerical files are preserved byte for byte. Do not train or regenerate
 | `baselines/` | 35, 70 and 120 historical CIFAR run records and fits |
 | `archival_package_2026-10-01/` | Previous manifest, validation and reproducibility note; historical scope |
 
-[MANIFEST.csv](MANIFEST.csv) gives current relative paths, sizes and SHA-256 hashes (excluding itself). Older manifests refer to their original package layout, not this tree. The [register](../../../../docs/experiment_index.csv) maps experiment IDs to these collections.
+[MANIFEST.csv](MANIFEST.csv) gives current relative paths, sizes and SHA-256 hashes (excluding itself). Older manifests refer to their original package layout, not this tree. The [register](../docs/experiment_index.csv) maps experiment IDs to these collections.
 
-Training heads, feature tensors, ID arrays and full histories remain in the local archive. Existing PNGs were relocated to [archived report figures](../../../../reports/figures/archived). Imported compact data are evidence for the stated measured protocols, not proof of all historical source/data integrity.
+Training heads, feature tensors, ID arrays and full histories remain in the local archive. Existing PNGs were relocated to [archived report figures](../reports/figures/archived). Imported compact data are evidence for the stated measured protocols, not proof of all historical source/data integrity.

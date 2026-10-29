@@ -12,7 +12,7 @@ Checks were run on the staged organization before publishing. They do not train 
 | Navigation | Current local Markdown targets and imported register paths checked; original archival package prose intentionally retains its old path references |
 | Figures | Four regenerated plots inspected for scales, labels, error bars, split names and clipping; historical builder rerun in a temporary copy for a smoke check |
 
-Commands, from the implementation directory:
+Commands, from the repository root:
 
 ```bash
 python -m cli.verify_artifacts --refit
@@ -27,3 +27,7 @@ Actual review environment: Python 3.11.6, NumPy 1.26.4, pandas 2.1.3, Matplotlib
 The archive audit's [source snapshot](archive_audit_source.py.txt) is preserved as historical text. It checks recorded evidence and checkpoint shapes; it does not re-evaluate heads on final feature tensors. The new portable verifier covers compact files available in Git.
 
 **Not checked:** original image contents and duplicate leakage; historical feature-label alignment; exact executed source/weight/environment identity; full retraining; historical access chronology; new final inference; rerunning the 100-replicate exploratory bootstrap. These limits remain in the report. Passing consistency checks is not a certification that all scientific assumptions are correct.
+
+## Root layout checks — 29 October 2026
+
+The relocated code passed 42 tests and saved-table checks for 425 sweep rows and 17,520 HPO trials. In a disposable root-layout copy, all ten YAML dry runs and both figure builders passed. The [dated record](layout_checks_2026-10-29.json) separates these checks from the earlier review. The researcher applies the remaining navigation/register changes and performs final checkout checks before publishing. No archival training or final-feature inference was rerun.

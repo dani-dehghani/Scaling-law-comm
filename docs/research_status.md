@@ -33,3 +33,7 @@ This is the 28 October review/publication update. Existing training was not reru
 5. Specify pretrained lineage and N/head controls before a model-size sweep; define channel/power/noise and full-width equivalence before channel experiments.
 
 See [register](experiment_index.csv), [implementation concerns](implementation_status.md) and [literature implications](literature/README.md).
+
+## Follow-up — 29 October 2026
+
+The researcher has moved the implementation and evidence into root-level folders. The moved code passed 42 tests and compact verification, using the environment recorded in the [layout check](validation/layout_checks_2026-10-29.json). Navigation/register/manifest fixes are included in the root-layout change; final checkout verification is described in the dated record. The expanded [contribution and dataset-size comparison](literature/dataset_sweep_and_novelty.md) supports a [candidate research question](research_question.md); novelty and experiment order are not yet approved or certified. No channel experiment has run.

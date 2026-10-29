@@ -89,4 +89,4 @@ WD 0.3 remained the upper tested boundary and was selected at seven of eight per
 4. Complete documented seed-aware uncertainty, residual and fit-range sensitivity analyses before strong extrapolation claims.
 5. Retain the full raw experiment archive and establish historical code/environment provenance for final thesis reproduction.
 
-Current source is a local implementation snapshot and is not proven to be the exact historical revision used for every recorded run. Packaging validation and provenance are documented in [REPRODUCIBILITY.md](../../../experiments/models/vit-tiny/REPRODUCIBILITY.md).
+Current source is a local implementation snapshot and is not proven to be the exact historical revision used for every recorded run. Packaging validation and provenance are documented in [REPRODUCIBILITY.md](../../../docs/reproducibility.md).

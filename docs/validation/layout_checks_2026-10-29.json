@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-29",
+  "actual_checkout_checks": {
+    "pytest_passed": 42,
+    "compact_sweep_rows": 425,
+    "hpo_trials": 17520
+  },
+  "proposal_copy_checks": {
+    "current_links": 203,
+    "all_ten_yaml_dry_runs": "passed in prior disposable root-layout copy",
+    "both_figure_builders": "passed in prior disposable root-layout copy",
+    "numerical_artifacts_and_scientific_source": "unchanged",
+    "broken_current_links": 0
+  },
+  "scope": "The researcher applies the final patch and reruns checkout checks before commit/push. No original training or final-data inference rerun.",
+  "environment": "Python 3.11.6; existing isolated SciPy 1.14.1 via PYTHONPATH; no bytecode or pytest-cache writes in checkout.",
+  "limits": [
+    "original image/cache alignment and exact historical execution identity unverified",
+    "focused literature review does not certify priority",
+    "channel study not implemented or run"
+  ]
+}

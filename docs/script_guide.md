@@ -12,11 +12,11 @@ flowchart LR
  D --> E[Saved metrics and plots]
 ```
 
-Use the [implementation README](../experiments/models/vit-tiny/README.md) for exact command context. The flows below describe this repository version, which is not proved to be the exact historical version of every experiment. Explanations of why a choice is useful are retrospective reasoning unless a dated protocol states the original reason.
+Use the [implementation README](implementation.md) for exact command context. The flows below describe this repository version, which is not proved to be the exact historical version of every experiment. Explanations of why a choice is useful are retrospective reasoning unless a dated protocol states the original reason.
 
 ## 1. `cli/check_environment.py` — describe the machine
 
-[Source](../experiments/models/vit-tiny/cli/check_environment.py). Input: current Python/PyTorch installation. Output: printed versions, CUDA/device information. It helps explain where a run executes; it does not prove that every dependency works or reproduce a historical environment.
+[Source](../cli/check_environment.py). Input: current Python/PyTorch installation. Output: printed versions, CUDA/device information. It helps explain where a run executes; it does not prove that every dependency works or reproduce a historical environment.
 
 `Read runtime metadata → print each item → finish`
 
@@ -28,7 +28,7 @@ for each name and value:
 
 ## 2. `cli/prepare_features.py` — turn images into reusable numbers
 
-[Entry point](../experiments/models/vit-tiny/cli/prepare_features.py) calls [feature_cache.py](../experiments/models/vit-tiny/src/feature_cache.py). Inputs: config, image dataset, pretrained weights. Outputs: feature/label/ID tensor files and metadata in a working cache. It may download data or weights and can be expensive.
+[Entry point](../cli/prepare_features.py) calls [feature_cache.py](../src/feature_cache.py). Inputs: config, image dataset, pretrained weights. Outputs: feature/label/ID tensor files and metadata in a working cache. It may download data or weights and can be expensive.
 
 ```mermaid
 flowchart TD
@@ -56,7 +56,7 @@ Why cache? The encoder never changes, so repeated head trials can reuse its outp
 
 ## 3. `cli/run_hpo.py` — choose classifier settings with validation
 
-[Source](../experiments/models/vit-tiny/cli/run_hpo.py). HPO means hyperparameter optimization. It enumerates recipe combinations; it is not a separate neural network. Inputs: HPO YAML and training/internal-validation cache. Outputs: trial metrics, selected heads in working results, aggregated validation tables and selections. It does not score the final-evaluation split.
+[Source](../cli/run_hpo.py). HPO means hyperparameter optimization. It enumerates recipe combinations; it is not a separate neural network. Inputs: HPO YAML and training/internal-validation cache. Outputs: trial metrics, selected heads in working results, aggregated validation tables and selections. It does not score the final-evaluation split.
 
 ```mermaid
 flowchart TD
@@ -88,7 +88,7 @@ A **shard** is a numbered part of the work. The shell launchers execute their sh
 
 ## 4. `cli/promote_places365_final_config.py` — write an accepted recipe into templates
 
-[Source](../experiments/models/vit-tiny/cli/promote_places365_final_config.py). Input: HPO completion, snapshot, aggregate and selection. Output: rewritten final/smoke YAMLs when checks pass; otherwise failure messages. This is a writing operation, not training.
+[Source](../cli/promote_places365_final_config.py). Input: HPO completion, snapshot, aggregate and selection. Output: rewritten final/smoke YAMLs when checks pass; otherwise failure messages. This is a writing operation, not training.
 
 `Read HPO evidence → check completeness, boundary and budget rules → reject or rewrite recipe/status`
 
@@ -105,7 +105,7 @@ Why check boundaries? A winner at the largest tested WD may mean the optimum lie
 
 ## 5. `cli/run_sweep.py` — run the fixed-recipe experiment
 
-[Source](../experiments/models/vit-tiny/cli/run_sweep.py). Inputs: one recipe, list of D values/seeds, cached features. Outputs: heads, histories, metrics, completion, summary, fit and plots under working `results/`.
+[Source](../cli/run_sweep.py). Inputs: one recipe, list of D values/seeds, cached features. Outputs: heads, histories, metrics, completion, summary, fit and plots under working `results/`.
 
 ```mermaid
 flowchart TD
@@ -137,7 +137,7 @@ Why train before final evaluation? The intended procedure avoids selecting recip
 
 ## 6. `cli/analyze_results.py` — summarize a run table
 
-[Source](../experiments/models/vit-tiny/cli/analyze_results.py) calls [scaling.py](../experiments/models/vit-tiny/src/scaling.py). Input: a results directory containing `summary.csv`. Output: rewritten aggregate CSV, fit JSON and two PNGs in that same directory.
+[Source](../cli/analyze_results.py) calls [scaling.py](../src/scaling.py). Input: a results directory containing `summary.csv`. Output: rewritten aggregate CSV, fit JSON and two PNGs in that same directory.
 
 `Run rows → group by D → mean and sample SD → fit loss function → write plots`
 
@@ -154,7 +154,7 @@ Why fit? To summarize how loss decreases over the measured range and generate te
 
 ## 7. `cli/compare_sweeps.py` — compare already measured curves
 
-[Source](../experiments/models/vit-tiny/cli/compare_sweeps.py). Inputs: named result directories and a separate output directory. Outputs: comparison table and figures.
+[Source](../cli/compare_sweeps.py). Inputs: named result directories and a separate output directory. Outputs: comparison table and figures.
 
 `Read saved aggregates → align sizes → display curves → save comparison`
 
@@ -170,7 +170,7 @@ The program does not retrain models or make old runs scientifically matched. A b
 
 ## 8. `cli/verify_artifacts.py` — check saved arithmetic and identities
 
-[Source](../experiments/models/vit-tiny/cli/verify_artifacts.py). This small program was added for the organization. Inputs: compact artifact files. Outputs: printed JSON, optionally a separate verification file. It does not train or inspect original images.
+[Source](../cli/verify_artifacts.py). This small program was added for the organization. Inputs: compact artifact files. Outputs: printed JSON, optionally a separate verification file. It does not train or inspect original images.
 
 ```text
 for each saved sweep:
@@ -187,7 +187,7 @@ Why another checker? A summary can look plausible even with missing or duplicate
 
 ## 9. `cli/build_report_figures.py` — draw the current report
 
-[Source](../experiments/models/vit-tiny/cli/build_report_figures.py). Added for this report. Inputs: main saved tables and fits. Outputs: four PNGs under `reports/figures/`.
+[Source](../cli/build_report_figures.py). Added for this report. Inputs: main saved tables and fits. Outputs: four PNGs under `reports/figures/`.
 
 `Read saved numbers → draw loss/accuracy → draw residuals → compare D with exposure → save`
 
@@ -206,10 +206,10 @@ D uses logarithmic spacing so small and large sizes remain visible. Vertical axe
 
 | File | Simple flow | What to know |
 |---|---|---|
-| [run_all.sh](../experiments/models/vit-tiny/scripts/run_all.sh) | Environment → features → main CIFAR sweep | Default now selects the documented main recipe; it can perform a full expensive run |
-| [run_places365_hpo.sh](../experiments/models/vit-tiny/scripts/run_places365_hpo.sh) | Features → broad-search shards → aggregate | Sequential shards, logs appended with `tee` |
-| [run_places365_hpo_refinement.sh](../experiments/models/vit-tiny/scripts/run_places365_hpo_refinement.sh) | Features → refinement shards → aggregate | Same orchestration, different YAML/grid/budget |
-| [run_places365_wd_boundary_hpo.sh](../experiments/models/vit-tiny/scripts/run_places365_wd_boundary_hpo.sh) | Features → extended-WD shards → aggregate | Same orchestration, extended search |
+| [run_all.sh](../scripts/run_all.sh) | Environment → features → main CIFAR sweep | Default now selects the documented main recipe; it can perform a full expensive run |
+| [run_places365_hpo.sh](../scripts/run_places365_hpo.sh) | Features → broad-search shards → aggregate | Sequential shards, logs appended with `tee` |
+| [run_places365_hpo_refinement.sh](../scripts/run_places365_hpo_refinement.sh) | Features → refinement shards → aggregate | Same orchestration, different YAML/grid/budget |
+| [run_places365_wd_boundary_hpo.sh](../scripts/run_places365_wd_boundary_hpo.sh) | Features → extended-WD shards → aggregate | Same orchestration, extended search |
 
 ```text
 change to the experiment directory
@@ -224,26 +224,26 @@ aggregate the existing trials
 
 ## 11. `scripts/build_historical_comparison.py` — preserved comparison plot recipe
 
-[Source](../experiments/models/vit-tiny/scripts/build_historical_comparison.py). It reads three saved CIFAR curves from `artifacts/`, joins measurements and writes the historical comparison CSV and two figures under `reports/figures/historical_comparison/`. Its flow is **read old aggregates → align sizes → draw log/linear views → save derivatives**. It has no training logic. Rerunning changes plot derivatives, not original measured tables; grid/recipe differences prevent a controlled single-factor conclusion.
+[Source](../scripts/build_historical_comparison.py). It reads three saved CIFAR curves from `artifacts/`, joins measurements and writes the historical comparison CSV and two figures under `reports/figures/historical_comparison/`. Its flow is **read old aggregates → align sizes → draw log/linear views → save derivatives**. It has no training logic. Rerunning changes plot derivatives, not original measured tables; grid/recipe differences prevent a controlled single-factor conclusion.
 
 ## 12. Shared modules: which operation lives where?
 
 | Module | Flow and simple pseudocode | Why it exists |
 |---|---|---|
-| [config.py](../experiments/models/vit-tiny/src/config.py) | YAML → dictionary → check known values: `load; validate; return` | Catch impossible sizes, budgets or incompatible dataset settings; unknown scientific keys remain a concern |
-| [sampling.py](../experiments/models/vit-tiny/src/sampling.py) | Labels + IDs + seed → class ordering → nested prefixes | Add data without replacing earlier membership; keep the task's classes represented |
-| [probe.py](../experiments/models/vit-tiny/src/probe.py) | Features → head → batch updates → validation → selected state → evaluation | Shared training/evaluation logic avoids different trainers in HPO and main sweeps |
-| [hpo.py](../experiments/models/vit-tiny/src/hpo.py) | Trial records → groups → mean losses → per-D/global selection | Keep the validation selection rule explicit |
-| [sweep.py](../experiments/models/vit-tiny/src/sweep.py) | Trial metrics → near-budget decision | Warn that a selected checkpoint near the limit may need more training; this is a heuristic |
-| [feature_cache.py](../experiments/models/vit-tiny/src/feature_cache.py) | Images/encoder → saved feature tensors; tensors → validated inputs | Reuse a frozen representation; known identity limits remain |
-| [scaling.py](../experiments/models/vit-tiny/src/scaling.py) | Size-wise means → 12 positive-parameter starts → robust log fit → best candidate | Describe the loss curve; predictive checking is separate |
-| [reproducibility.py](../experiments/models/vit-tiny/src/reproducibility.py) | Seed/device settings → runtime state and metadata | Reduce avoidable variation and record the environment; not a bitwise-reproduction guarantee |
-| [io_utils.py](../experiments/models/vit-tiny/src/io_utils.py) | JSON payload → temporary file → replace destination | Reduce partial JSON writes; does not bind several files into one transaction |
+| [config.py](../src/config.py) | YAML → dictionary → check known values: `load; validate; return` | Catch impossible sizes, budgets or incompatible dataset settings; unknown scientific keys remain a concern |
+| [sampling.py](../src/sampling.py) | Labels + IDs + seed → class ordering → nested prefixes | Add data without replacing earlier membership; keep the task's classes represented |
+| [probe.py](../src/probe.py) | Features → head → batch updates → validation → selected state → evaluation | Shared training/evaluation logic avoids different trainers in HPO and main sweeps |
+| [hpo.py](../src/hpo.py) | Trial records → groups → mean losses → per-D/global selection | Keep the validation selection rule explicit |
+| [sweep.py](../src/sweep.py) | Trial metrics → near-budget decision | Warn that a selected checkpoint near the limit may need more training; this is a heuristic |
+| [feature_cache.py](../src/feature_cache.py) | Images/encoder → saved feature tensors; tensors → validated inputs | Reuse a frozen representation; known identity limits remain |
+| [scaling.py](../src/scaling.py) | Size-wise means → 12 positive-parameter starts → robust log fit → best candidate | Describe the loss curve; predictive checking is separate |
+| [reproducibility.py](../src/reproducibility.py) | Seed/device settings → runtime state and metadata | Reduce avoidable variation and record the environment; not a bitwise-reproduction guarantee |
+| [io_utils.py](../src/io_utils.py) | JSON payload → temporary file → replace destination | Reduce partial JSON writes; does not bind several files into one transaction |
 | `__init__.py` in `src/` and `cli/` | Package marker; no experimental process | Makes imports/module invocation possible |
 
 ## 13. Settings, tests and artifacts
 
-Each YAML is a settings sheet rather than a program: model/checkpoint; dataset/split/sampling/D/seeds; optimizer/stopping; runtime; and sometimes HPO candidate lists. The [configuration status table](../experiments/models/vit-tiny/README.md) describes all ten sheets and distinguishes blocked templates from executed snapshots.
+Each YAML is a settings sheet rather than a program: model/checkpoint; dataset/split/sampling/D/seeds; optimizer/stopping; runtime; and sometimes HPO candidate lists. The [configuration status table](implementation.md) describes all ten sheets and distinguishes blocked templates from executed snapshots.
 
 Each `tests/test_*.py` file checks the module named in its filename using small synthetic inputs. Tests cover configuration, sampling, cache checks, head behavior, HPO selection, orchestration helpers and fitting; the new artifact-checker tests reject corrupted records. Passing tests support those cases, not every historical input. Requirements files list dependencies; `pytest.ini` tells pytest where this implementation and its tests live. Ignore files keep heavy working data/results out of Git. Protocol Markdown states intended scientific rules. CSV/JSON artifacts record measured numbers and execution settings. PNGs display numbers; they are not the only evidence.
 

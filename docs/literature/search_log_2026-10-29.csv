@@ -1,0 +1,13 @@
+date,query,purpose,scope_limit
+2026-10-29,"""frozen"" ""linear probing"" ""data scaling"" compute",Identify close prior work and challenge candidate novelty,Focused web search; not systematic or exhaustive; only primary works used for technical evidence
+2026-10-29,"""scaling laws"" ""semantic communication"" ""dataset""",Identify close prior work and challenge candidate novelty,Focused web search; not systematic or exhaustive; only primary works used for technical evidence
+2026-10-29,"""data scaling"" ""linear probe"" regularization",Identify close prior work and challenge candidate novelty,Focused web search; not systematic or exhaustive; only primary works used for technical evidence
+2026-10-29,"""semantic communication"" ""scaling laws""",Identify close prior work and challenge candidate novelty,Focused web search; not systematic or exhaustive; only primary works used for technical evidence
+2026-10-29,"""dataset size"" ""SNR"" ""semantic communication""",Identify close prior work and challenge candidate novelty,Focused web search; not systematic or exhaustive; only primary works used for technical evidence
+2026-10-29,"""Reproducible Scaling Laws"" ""Contrastive"" site:openaccess.thecvf.com",Identify close prior work and challenge candidate novelty,Focused web search; not systematic or exhaustive; only primary works used for technical evidence
+2026-10-29,"""Scaling Laws"" ""Transfer"" ""Linear"" site:arxiv.org",Identify close prior work and challenge candidate novelty,Focused web search; not systematic or exhaustive; only primary works used for technical evidence
+2026-10-29,"""semantic communication"" ""sample complexity"" site:arxiv.org",Identify close prior work and challenge candidate novelty,Focused web search; not systematic or exhaustive; only primary works used for technical evidence
+2026-10-29,"""learning curves"" ""compressed"" ""features"" ""classification""",Identify close prior work and challenge candidate novelty,Focused web search; not systematic or exhaustive; only primary works used for technical evidence
+2026-10-29,"""frozen"" ""data scaling"" ""compression"" ""channel""",Identify close prior work and challenge candidate novelty,Focused web search; not systematic or exhaustive; only primary works used for technical evidence
+2026-10-29,"""semantic communication"" ""learning curves""",Identify close prior work and challenge candidate novelty,Focused web search; not systematic or exhaustive; only primary works used for technical evidence
+2026-10-29,"""semantic communication"" ""sample efficiency"" ""data""",Identify close prior work and challenge candidate novelty,Focused web search; not systematic or exhaustive; only primary works used for technical evidence

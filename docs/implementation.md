@@ -1,20 +1,20 @@
 # Frozen ViT-Tiny data-size implementation
 
-The program caches 192-dimensional image features from a pretrained frozen encoder, samples nested labeled subsets, trains affine classifiers and measures loss/accuracy. It does not fine-tune the encoder or implement a transmission channel. Read the [main report](../../../reports/thesis_progress.md) for the scientific interpretation and [script guide](../../../docs/script_guide.md) for simple flows.
+The program caches 192-dimensional image features from a pretrained frozen encoder, samples nested labeled subsets, trains affine classifiers and measures loss/accuracy. It does not fine-tune the encoder or implement a transmission channel. Read the [main report](../reports/thesis_progress.md) for the scientific interpretation and [script guide](script_guide.md) for simple flows.
 
 ## File roles
 
 | Folder | Purpose |
 |---|---|
 | `src/` | Reusable configuration, features, sampling, training, selection, fitting and I/O |
-| `cli/` | Command-line programs; invoke as `python -m cli.NAME` from this directory |
+| `cli/` | Command-line programs; invoke as `python -m cli.NAME` from the repository root |
 | `scripts/` | Shell launchers combining commands; one preserved historical plot builder |
 | `configs/` | YAML recipes; table below separates executed evidence from old templates |
 | `protocols/` | Historical research designs and acceptance rules; old command spelling is historical |
 | `tests/` | Small synthetic software/scientific regression checks |
 | `artifacts/` | Compact immutable result tables and original config/selection/completion snapshots |
 
-Run commands below from `experiments/models/vit-tiny/` in the clone. Install a compatible torch/torchvision pair for the intended machine before the remaining [requirements](requirements.txt); [development requirements](requirements-dev.txt) include pytest. Version ranges are not a locked historical environment.
+Run commands below from the repository root, `Scaling-law-comm/`. Install a compatible torch/torchvision pair for the intended machine before the remaining [requirements](../requirements.txt); [development requirements](../requirements-dev.txt) include pytest. Version ranges are not a locked historical environment.
 
 ## Inspect evidence without training
 
@@ -44,14 +44,14 @@ From the repository root, run `python -m pytest -q`. Tests include synthetic hea
 | `hpo_lr_stage1.yaml` | Early 72-trial LR pilot; Python HPO default is historical |
 | `data_sweep_legacy_matched_control.yaml` | Proposed control; no completed matched-control evidence imported |
 
-For what actually ran, read [CIFAR snapshot](artifacts/cifar100_main/config_snapshot.json) or [approved Places snapshot](artifacts/places365_main/config_snapshot.json). JSON snapshots can also be read by the YAML loader for inspection, for example `python -m cli.run_sweep --config artifacts/places365_main/config_snapshot.json --dry-run`. Do not alter original artifact snapshots to configure a new experiment.
+For what actually ran, read [CIFAR snapshot](../artifacts/cifar100_main/config_snapshot.json) or [approved Places snapshot](../artifacts/places365_main/config_snapshot.json). JSON snapshots can also be read by the YAML loader for inspection, for example `python -m cli.run_sweep --config artifacts/places365_main/config_snapshot.json --dry-run`. Do not alter original artifact snapshots to configure a new experiment.
 
 ## Execution and output boundaries
 
 `bash scripts/run_all.sh` performs environment reporting, feature preparation and a full CIFAR sweep: it is an expensive execution command, not a preview. It defaults to the documented main recipe and can download/build caches if required. The three Places HPO launchers prepare features, run shards **sequentially** and aggregate; they do not launch shards in parallel. Their log directories assume their named default experiment, so use the Python CLI directly for custom experiment output layouts.
 
-Normal training writes ignored `data/`, `cache/` and `results/` directories under this implementation. Nothing trains inside `artifacts/`. Recover the historical data/cache identities and resolve [known integrity gaps](../../../docs/implementation_status.md) before using this snapshot for new archival results. No new training was needed to publish this report.
+Normal training writes ignored `data/`, `cache/` and `results/` directories under the repository root. Nothing trains inside `artifacts/`. Recover the historical data/cache identities and resolve [known integrity gaps](implementation_status.md) before using this snapshot for new archival results. No new training was needed to publish this report.
 
 `cli.analyze_results` rewrites aggregate/fit/plot outputs in its supplied result directory. Use a separate working copy for new analyses, never an original artifact folder. `cli.compare_sweeps` similarly writes to an explicit derivative output directory. `cli.promote_places365_final_config` is a deliberate configuration-writing program, not a read-only evidence viewer.
 
-[Reproducibility scope](REPRODUCIBILITY.md) · [artifact map](artifacts/README.md) · [protocol index](protocols/README.md)
+[Reproducibility scope](reproducibility.md) · [artifact map](../artifacts/README.md) · [protocol index](../protocols/README.md)

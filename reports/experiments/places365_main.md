@@ -8,6 +8,6 @@ Current scorecard, 28 October 2026. The [comprehensive report](../thesis_progres
 
 ![Measured loss and accuracy](../figures/places365_main.png)
 
-Evidence: [runs](../../experiments/models/vit-tiny/artifacts/places365_main/summary.csv), [aggregates](../../experiments/models/vit-tiny/artifacts/places365_main/aggregated_by_D.csv), [executed snapshot](../../experiments/models/vit-tiny/artifacts/places365_main/config_snapshot.json), [fit](../../experiments/models/vit-tiny/artifacts/places365_main/scaling_fit.json), [completion](../../experiments/models/vit-tiny/artifacts/places365_main/completion.json).
+Evidence: [runs](../../artifacts/places365_main/summary.csv), [aggregates](../../artifacts/places365_main/aggregated_by_D.csv), [executed snapshot](../../artifacts/places365_main/config_snapshot.json), [fit](../../artifacts/places365_main/scaling_fit.json), [completion](../../artifacts/places365_main/completion.json).
 
 Error bars show ±1 sample SD over seeds. Results concern downstream labels and this fixed recipe, not encoder or channel scaling. Numeric consistency was checked; original feature/image provenance remains unresolved.

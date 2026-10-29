@@ -21,6 +21,10 @@ Numerical source modules and all ten original YAML configurations are byte-ident
 
 The paper inventory identifies 15 files, two duplicate pairs and 13 unique reviews. Originals are not copied into Git. Planning documents are recorded by identity and paraphrased scope; the original thesis proposal is absent. Archive copies, partial result mirrors and tar files are not counted as new trials.
 
-See [validation](validation/README.md), [source hashes/checks](validation/organization_checks.json), [artifact hashes](../experiments/models/vit-tiny/artifacts/MANIFEST.csv) and [evidence map](workspace_inventory.md). Existing Git history retains pre-organization versions of rewritten navigation documents. Raw images, feature tensors and weights are not published here.
+See [validation](validation/README.md), [source hashes/checks](validation/organization_checks.json), [artifact hashes](../artifacts/MANIFEST.csv) and [evidence map](workspace_inventory.md). Existing Git history retains pre-organization versions of rewritten navigation documents. Raw images, feature tensors and weights are not published here.
 
 Git attributes preserve artifact bytes during checkout; CSV whitespace checks recognize the original CRLF line endings rather than normalizing recorded evidence.
+
+## Root layout — 29 October 2026
+
+The researcher moved the implementation, CLI, launchers, configurations, protocols, tests and compact artifacts from `experiments/models/vit-tiny/` to the repository root. The implementation and reproducibility guides moved into `docs/`. Test settings, two figure-output paths, ignore rules and Git attributes were adjusted by the researcher. This follow-up repairs current navigation and register paths, consolidates ignore rules and refreshes only the current artifact manifest. October 1 package records and October 28 validation evidence retain their historical paths and dates. Numerical source and executed configurations remain unchanged.
